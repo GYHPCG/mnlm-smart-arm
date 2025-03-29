@@ -10,6 +10,7 @@ time.sleep(.1)
 # 定义夹积木块函数，enable=1：夹住，=0：松开
 def arm_clamp_block(enable):
     if enable == 0:
+        # Arm.Arm_serial_servo_write(id,40,68)
         Arm.Arm_serial_servo_write(6, 60, 400)
     else:
         Arm.Arm_serial_servo_write(6, 135, 400)
