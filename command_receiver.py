@@ -30,7 +30,7 @@ def json_example():
         return "Request was not JSON", 400
 
 def flask_thread():
-    app.run(host="0.0.0.0", port=5688)
+    app.run(host="192.168.43.144", port=5688)
 
 if __name__ == "__main__":
     rospy.init_node("command_receiver_node", anonymous=True)
