@@ -1,8 +1,16 @@
+'''
+Author: '破竹' '2986779260@qq.com'
+Date: 2025-03-25 22:13:55
+LastEditors: '破竹' '2986779260@qq.com'
+LastEditTime: 2025-03-31 18:11:10
+FilePath: \code\mnlm-smart-arm\assiant.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
 
 from openai import OpenAI
-from arm_dance import arm_dance
-from arm_clamp_block import arm_clamp_block
-from arm_move import arm_move
+from robot_arm.arm_dance import arm_dance
+from robot_arm.arm_clamp_block import arm_clamp_block
+from robot_arm.arm_move import arm_move
 import json
 
 SYSTEM_PROMOPT='''
