@@ -39,6 +39,6 @@ if __name__ == "__main__":
     json_file_path = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), "client/RAG/dummy_command.json"
     )
-    service_url = "http://0.0.0.0:5678/robot_command"
+    service_url = "http://0.0.0.0:5688/robot_command"
 
     send_commands_to_service(json_file_path, service_url)
