@@ -13,6 +13,7 @@ from openai import OpenAI
 from typing import Optional, Dict
 from openai.types.beta import Assistant
 from openai.types.beta.threads import Run
+from command_send import send_commands_to_service
 def create_assistant(
     client: OpenAI,logger: Logger, verbose: bool = False
 ) -> Assistant:
@@ -95,6 +96,8 @@ def start_conversation(
         if use_voice_input:
             user_input = generate_transcription(verbose=False)
             print(f"User: {user_input}")
+            send_commands_to_service(user_input, "http://192.168.43.144:5688/robot_command")
+
         else:
             print("User: ", end="")
             user_input = input()

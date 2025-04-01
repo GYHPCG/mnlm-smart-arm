@@ -12,18 +12,20 @@ import os
 import requests
 
 
-def send_commands_to_service(json_file_path, service_url):
+def send_commands_to_service(user_input, service_url):
     # Load the JSON commands from the specified file
-    with open(json_file_path, "r") as file:
-        commands = json.load(file)
-    print(f"Commands: {commands}")
+    # with open(json_file_path, "r") as file:
+    #     commands = json.load(file)
+    # print(f"Commands: {commands}")
     # commands = f"""
     # {{
     #     "operations": []
     # }}
     # """
     # Send the JSON commands to the HTTP service
-    response = requests.post(service_url, json=commands)
+    # 将字符串转为json
+    user_input = json.loads(user_input)
+    response = requests.post(service_url, json=user_input)
 
     # Check the response status
     if response.status_code == 200:
