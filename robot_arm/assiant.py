@@ -8,11 +8,11 @@ Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查�
 '''
 
 from openai import OpenAI
-from robot_arm.arm_dance import arm_dance
-from robot_arm.arm_clamp_block import arm_clamp_block
-from robot_arm.arm_move import arm_move
+from arm_dance import arm_dance
+from arm_clamp_block import arm_clamp_block
+from arm_move import arm_move
 import json
-from robot_arm.listener import get_received_command 
+from listener import get_received_command 
 
 SYSTEM_PROMOPT='''
 你是我的机械臂助手，机械臂内置了一些函数，请你根据我的指令来调用这些函数。
