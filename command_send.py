@@ -25,12 +25,13 @@ def send_commands_to_service(user_input, service_url):
     # Send the JSON commands to the HTTP service
     # 将字符串转为json
     # 检查 user_input 是否为空
-    if not user_input:
+    if user_input is None:
         print("Error: user_input is empty or None. Skipping operation.")
         return
 
     try:
         # 将字符串转为 JSON
+        print(f"send mo user_input: {user_input}")
         user_input = json.loads(user_input)
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON: {e}. Skipping operation.")
