@@ -40,7 +40,8 @@ if __name__ == '__main__':
         base_url='https://api.openai-proxy.org/v1',
         api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
     )
-    PROMOPT= get_received_command
+    command = get_received_command()
+    PROMOPT= command
     chat_completion = client.chat.completions.create(
         # name="Voice Robot Controller",
         # instructions="""

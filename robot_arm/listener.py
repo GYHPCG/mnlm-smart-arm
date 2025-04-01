@@ -30,8 +30,14 @@ def callback(data):
 def get_received_command():
     """
     Returns the last received JSON command as a string.
+    If no command has been received, it waits until a command is available.
     """
     global received_command
+    # 等待直到接收到数据
+    rate = rospy.Rate(10)  # 10 Hz
+    while received_command is None and not rospy.is_shutdown():
+        rospy.loginfo("Waiting for JSON command...")
+        rate.sleep()
     return received_command
 
 def listener():
