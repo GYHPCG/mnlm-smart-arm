@@ -11,6 +11,7 @@ from std_msgs.msg import String
 from flask import Flask, request
 import json
 import threading
+import assiant
 
 app = Flask(__name__)
 publisher = None
@@ -32,6 +33,7 @@ def json_example():
 def flask_thread():
     app.run(host="0.0.0.0", port=5688)
 
+
 if __name__ == "__main__":
     rospy.init_node("command_receiver_node", anonymous=True)
     publisher = rospy.Publisher("json_command_topic", String, queue_size=10)
@@ -40,3 +42,5 @@ if __name__ == "__main__":
     threading.Thread(target=flask_thread, daemon=True).start()
 
     rospy.spin()
+
+    assiant.assiant

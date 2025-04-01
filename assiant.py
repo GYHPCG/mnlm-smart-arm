@@ -34,7 +34,7 @@ SYSTEM_PROMOPT='''
 你现在的任务是：
 '''
 
-if __name__ == '__main__':
+def assiant():
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
@@ -69,3 +69,6 @@ if __name__ == '__main__':
     for each in response_content['function']: # 运行智能体规划编排的每个函数
             print('开始执行动作', each)
             eval(each)
+
+if __name__ == '__main__':
+    assiant()
