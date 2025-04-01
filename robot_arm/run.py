@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-31 17:56:58
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-03-31 20:35:03
+LastEditTime: 2025-04-01 15:14:53
 FilePath: \code\mnlm-smart-arm\robot_arm\command_receiver.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -43,4 +43,4 @@ if __name__ == "__main__":
 
     rospy.spin()
 
-    assiant.assiant
+    assiant.assiant()
