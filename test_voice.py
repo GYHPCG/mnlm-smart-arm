@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-30 22:00:10
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-04-01 14:39:48
+LastEditTime: 2025-04-01 17:12:13
 FilePath: \code\mnlm-smart-arm\test_voice.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -10,10 +10,11 @@ from voice import generate_transcription, speak
 from dotenv import load_dotenv
 from utils import Logger  
 from openai import OpenAI
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 from openai.types.beta import Assistant
 from openai.types.beta.threads import Run
 from command_send import send_commands_to_service
+import time
 def create_assistant(
     client: OpenAI,logger: Logger, verbose: bool = False
 ) -> Assistant:
@@ -75,7 +76,55 @@ def create_run(
     if verbose:
         logger.info(f"Run created: {run}")
     return run
+def wait_for_run(
+    client: OpenAI,
+    thread_id: str,
+    run_id: str,
+    logger: Logger,
+    verbose: bool = False,
+) -> Optional[str]:
+    """
+    Waits for the run to complete.
 
+    Parameters:
+        client (OpenAI): The OpenAI client.
+        thread_id (str): The thread ID.
+        run_id (str): The run ID.
+        tools (Dict[str, Any]): The tools dictionary.
+        logger (Logger): The logger.
+        verbose (bool): If True, prints verbose output.
+
+    Returns:
+        str: The response from the run.
+    """
+    while True:
+        # Retrieve the run status.
+        run = client.beta.threads.runs.retrieve(
+            thread_id=thread_id,
+            run_id=run_id,
+        )
+        if run.status == "completed":
+            messages = client.beta.threads.messages.list(
+                thread_id=thread_id, limit=2, order="desc"
+            )
+            response = ""
+            for message in messages:
+                response += message.content[0].text.value  # type: ignore
+                print(
+                    f"{message.role.capitalize()}: {message.content[0].text.value}"  # type: ignore
+                )  # type: ignore
+                break
+            return response
+        elif run.status == "in_progress" or run.status == "queued":
+            if verbose:
+                logger.info(
+                    f"Run in progress: {run.required_action}, {run.status}, {run.tools if hasattr(run, 'tools') else ''}\n\n"
+                )
+            time.sleep(2)
+        else:
+            logger.error(f"Run failed: {run.status}\n\n")
+            break
+    return None
 
 def start_conversation(
     verbose: bool,
@@ -91,11 +140,15 @@ def start_conversation(
     assistant = create_assistant(
         client=client, logger=logger, verbose=verbose
     )
-    
+
+    thread = client.beta.threads.create()
+                                        
     while True:
         if use_voice_input:
             user_input = generate_transcription(verbose=False)
             print(f"User: {user_input}")
+            if user_input == "":
+                continue
             send_commands_to_service(user_input, "http://192.168.43.144:5688/robot_command")
 
         else:
@@ -108,9 +161,30 @@ def start_conversation(
         if not user_input and nudge_user:
             logger.warning("No input detected. Please speak clearly.")
             continue
-
-        # if use_voice_output:
-        #     speak(text=user_input, client=client)
+        
+        message = client.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=user_input,
+        )
+        run = create_run(
+            client=client,
+            assistant_id=assistant.id,
+            thread_id=thread.id,
+            instructions=user_input,
+            logger=logger,
+            verbose=verbose,
+        )
+        response = wait_for_run(
+            client=client,
+            thread_id=thread.id,
+            run_id=run.id,
+            # tools=tools,
+            logger=logger,
+            verbose=verbose,
+        )
+        if use_voice_output:
+            speak(text=response, client=client)
 
     cleanup(client=client, verbose=verbose, logger=logger)
 

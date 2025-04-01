@@ -58,5 +58,5 @@ if __name__ == "__main__":
     # )
     service_url = "http://192.168.43.144:5688/robot_command"
     #生成一个简单json
-    json_com = "你好"
+    json_com = "跳舞"
     send_commands_to_service(json_com, service_url)
