@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-31 17:56:58
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-04-01 15:14:53
+LastEditTime: 2025-04-01 16:04:44
 FilePath: \code\mnlm-smart-arm\robot_arm\command_receiver.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -15,17 +15,18 @@ import assiant
 
 app = Flask(__name__)
 publisher = None
-
+command_str = None  # 定义全局变量
 @app.route("/robot_command", methods=["POST"])
 def json_example():
+    global command_str  # 声明使用全局变量
     if request.is_json:
         content = request.get_json()
-        command_str = json.dumps(content)
+        command_str = json.dumps(content, ensure_ascii=False)
         print("接受 JSON command: %s\n" % command_str)
-        rospy.loginfo("Received JSON command: %s" % command_str)
-        msg = String()
-        msg.data = command_str
-        publisher.publish(msg)
+        # rospy.loginfo("Received JSON command: %s" % command_str)
+        # msg = String()
+        # msg.data = command_str
+        # publisher.publish(msg)
         return "JSON command received and published!", 200
     else:
         return "Request was not JSON", 400
@@ -43,4 +44,4 @@ if __name__ == "__main__":
 
     rospy.spin()
 
-    assiant.assiant()
+    assiant.assiant(command_str)

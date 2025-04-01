@@ -34,14 +34,14 @@ SYSTEM_PROMOPT='''
 你现在的任务是：
 '''
 
-def assiant():
+def assiant(command_str):
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
         api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
     )
-    command = get_received_command()
-    PROMOPT= command
+    # command = get_received_command()
+    PROMOPT= command_str
     chat_completion = client.chat.completions.create(
         # name="Voice Robot Controller",
         # instructions="""
@@ -71,4 +71,4 @@ def assiant():
             eval(each)
 
 if __name__ == '__main__':
-    assiant()
+    assiant("先回到原点，然后跳舞。")

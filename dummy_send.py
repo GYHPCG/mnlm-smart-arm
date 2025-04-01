@@ -14,9 +14,9 @@ import requests
 
 def send_commands_to_service(user_input, service_url):
     # Load the JSON commands from the specified file
-    # with open(json_file_path, "r") as file:
-    #     commands = json.load(file)
-    # print(f"Commands: {commands}")
+    with open(json_file_path, "r") as file:
+        commands = json.load(file)
+    print(f"Commands: {commands}")
     # commands = f"""
     # {{
     #     "operations": []
@@ -25,22 +25,9 @@ def send_commands_to_service(user_input, service_url):
     # Send the JSON commands to the HTTP service
     # 将字符串转为json
     # 检查 user_input 是否为空
-    if user_input is None:
-        print("Error: user_input is empty or None. Skipping operation.")
-        return
-
-    try:
-        # 将字符串转为 JSON
-        print(f"send mo user_input: {user_input}")
-        # user_input = json.loads(user_input)
-        json_com = json.dumps({"user_input": user_input}, ensure_ascii=False)
-        print(f"send mo json_com: {json_com}")
+   
     
-    except json.JSONDecodeError as e:
-        print(f"Error decoding JSON: {e}. Skipping operation.")
-        return
-    
-    response = requests.post(service_url, json=user_input)
+    response = requests.post(service_url, json=commands)
 
     # Check the response status
     if response.status_code == 200:
@@ -53,10 +40,9 @@ def send_commands_to_service(user_input, service_url):
 
 
 if __name__ == "__main__":
-    # json_file_path = os.path.join(
-    #     os.path.dirname(os.path.dirname(__file__)), "D:\Desktop\毕设\code\mnlm-smart-arm\client\RAG\dummy_command.json"
-    # )
+    json_file_path = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "D:\Desktop\毕设\code\mnlm-smart-arm\client\RAG\dummy_command.json"
+    )
     service_url = "http://192.168.43.144:5688/robot_command"
-    #生成一个简单json
-    json_com = "你好"
-    send_commands_to_service(json_com, service_url)
+
+    send_commands_to_service(json_file_path, service_url)
