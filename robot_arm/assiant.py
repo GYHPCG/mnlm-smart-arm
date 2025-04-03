@@ -14,6 +14,7 @@ from arm_move import arm_move
 from arm_rgb_control import rgb_control
 from arm_zero import arm_zero 
 from arm_read_servo import read_servo
+from arm_ctrl_servo import ctrl_servo
 from arm_left_right import left_right
 from arm_rotate import arm_rotate
 import json
