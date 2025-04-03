@@ -17,7 +17,6 @@ import time
 app = Flask(__name__)
 publisher = None
 command_str = None  # 定义全局变量
-command_queue = queue.Queue()  # 创建线程安全的队列
 @app.route("/robot_command", methods=["POST"])
 def json_example():
     global command_str  # 声明使用全局变量
