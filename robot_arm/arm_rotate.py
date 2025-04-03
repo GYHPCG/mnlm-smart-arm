@@ -8,7 +8,7 @@ Arm = Arm_Device()
 time.sleep(.1)
 
 def arm_rotate(angle):
-    Arm.Arm_serial_servo_write6(1, angle, 1000)
+    Arm.Arm_serial_servo_write(1, angle, 1000)
 
 if __name__ == '__main__':
     while True:
