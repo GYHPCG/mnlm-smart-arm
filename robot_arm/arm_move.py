@@ -20,4 +20,3 @@ def arm_move(p, s_time = 500):
             Arm.Arm_serial_servo_write(id, p[i], int(s_time))
         time.sleep(.01)
     time.sleep(s_time/1000)
-    del Arm

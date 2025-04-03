@@ -28,7 +28,6 @@ def left_right():
     Arm.Arm_serial_servo_write6(90, 90, 90, 90, 90, 90, 1000)
     time.sleep(1.5)
 
-    del Arm
 
 if __name__ == '__main__':
     try:

@@ -140,7 +140,6 @@ def arm_dance():
     Arm.Arm_serial_servo_write(4, 90, time_1)
     time.sleep(time_sleep)
     
-    del Arm
     print(" END OF LINE! ")
 
 if __name__ == '__main__':

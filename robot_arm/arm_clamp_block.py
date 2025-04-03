@@ -15,7 +15,7 @@ def arm_clamp_block(enable):
     else:
         Arm.Arm_serial_servo_write(6, 135, 400)
     time.sleep(.5)
-    del Arm
+
 
 if __name__ == '__main__':
     arm_clamp_block(1)

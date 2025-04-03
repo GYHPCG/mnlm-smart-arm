@@ -11,7 +11,7 @@ time.sleep(.1)
 def ctrl_servo(id, px, py):
     Arm.Arm_serial_servo_write(id, px, py)
     time.sleep(1)
-    del Arm
+
 
 if __name__ == '__main__':
     ctrl_servo(1, 0, 0)

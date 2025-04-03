@@ -10,7 +10,7 @@ time.sleep(.1)
 def arm_zero():
     Arm.Arm_serial_servo_write6(90, 90, 90, 90, 90, 90, 500)
     time.sleep(1)
-    del Arm
+
 
 if __name__ == '__main__':
     arm_zero()
