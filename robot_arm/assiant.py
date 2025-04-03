@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-03-31 18:11:10
+LastEditTime: 2025-04-03 20:31:14
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -11,6 +11,10 @@ from openai import OpenAI
 from arm_dance import arm_dance
 from arm_clamp_block import arm_clamp_block
 from arm_move import arm_move
+from arm_rgb_control import rgb_control
+from arm_zero import arm_zero 
+from arm_read_servo import read_servo
+
 import json
 from listener import get_received_command 
 
@@ -18,9 +22,13 @@ SYSTEM_PROMOPT='''
 你是我的机械臂助手，机械臂内置了一些函数，请你根据我的指令来调用这些函数。
 【以下是所有内置函数介绍】
 定义夹积木块函数,arm_clamp_block(enable)，enable=1：夹住，=0：松开
-定义移动机械臂函数,同时控制1-5号舵机运动,arm_move(p, s_time = 500)，p=[S1,S2,S3,S4,S5],其中S1-S5分别是舵机1-5的角度，s_time是舵机运动时间，单位ms
+定义移动机械臂函数,同时控制1-5号舵机运动,arm_move(p, s_time = 500)，p=[S1,S2,S3,S4,S5],其中S1-S4分别是舵机1-4的角度，范围为(0,180),小于90度向前弯，大于向后弯， S5为舵机5的角度范围(0,270)，s_time是舵机运动时间，单位ms
 定义机械臂跳舞函数，arm_dance()，让机械臂跳舞
 定义机械臂归零函数，arm_zero()，让机械臂回到原点
+定义机械臂rgb灯光函数，arm_rgb_control()，让机械臂灯光颜色随机变化
+定义机械臂归中函数，arm_zero()，让机械臂回到原点
+定义机械臂获取舵机角度函数，arm_read_servo(id)->int，id=1-6，返回舵机id的角度
+定义机械臂控制舵机函数，ctrl_servo(id, px, py)，id=1-5，px,py是舵机id对应的位置，单位是mm，比如ctrl_servo(1, 100, 200)，表示将舵机1的位置设置为100mm，200mm。
 
 【输出json格式】
 你直接输出json即可，从{开始，不要输出包含```json的开头或结尾

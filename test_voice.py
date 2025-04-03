@@ -154,6 +154,7 @@ def start_conversation(
         else:
             print("User: ", end="")
             user_input = input()
+            send_commands_to_service(user_input, "http://192.168.43.144:5688/robot_command")
 
         if user_input.lower() == "exit":
             break
@@ -194,9 +195,9 @@ if __name__ == "__main__":
     load_dotenv(override=True)
     verbose = True
     nudge_user = True
-    use_voice_input = True  # Set to True to enable voice input. In docker container, it's not possible.
-    use_voice_output = True  # Set to True to enable voice output. In docker container, it's not possible.
-    use_dummy_robot_arm_server = True  # Set to True to use the simulation mode
+    use_voice_input = False  # Set to True to enable voice input. In docker container, it's not possible.
+    use_voice_output = False  # Set to True to enable voice output. In docker container, it's not possible.
+    use_dummy_robot_arm_server = False  # Set to True to use the simulation mode
     use_rag = True
     logger = Logger(__name__)
     start_conversation(
