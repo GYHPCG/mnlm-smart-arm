@@ -59,7 +59,7 @@ def assiant(command_str):
         # """,
         messages=[
             {
-                "role": "system",
+                "role": "user",
                 "content": SYSTEM_PROMOPT + PROMOPT,
             }
         ],
