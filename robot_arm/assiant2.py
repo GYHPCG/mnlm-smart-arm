@@ -37,7 +37,7 @@ def generate_prompt(command_str)->str:
     【以下是所有内置函数介绍】
     定义机械臂跳舞函数，arm_dance()，让机械臂跳舞
     定义机械臂归中函数，arm_zero()，让机械臂回到原点
-    定义机械臂rgb灯光函数，arm_rgb_control(r,g,b)，让机械臂灯光颜色随机变化
+    定义机械臂rgb灯光函数，rgb_control(r,g,b)，控制机械臂灯光颜色
     定义机械臂归中函数，arm_zero()，让机械臂回到原点
     定义控制第i个舵机函数，move_single_servo(id, angle, op_time)，控制第i个舵机运动，id是舵机编号，angle是舵机角度，op_time是舵机转动时间
     定义控制所有舵机函数，move_all_servo(angle, op_time)，控制所有舵机运动，angle[6]是对应的每个舵机角度，op_time是舵机转动时间
