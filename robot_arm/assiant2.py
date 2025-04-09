@@ -33,7 +33,7 @@ def generate_prompt(command_str)->str:
                     api_document = "".join(f.readlines())
 
     SYSTEM_PROMOPT=f"""
-    你是我的机械臂助手，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来)。
+    你有一个大脑和一个机械臂，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来)。
     【以下是所有内置函数介绍】
     定义机械臂跳舞函数，arm_dance()，让机械臂跳舞
     定义机械臂归中函数，arm_zero()，让机械臂回到原点
@@ -102,7 +102,7 @@ def assiant(command_str):
             }
         ],
         # tools=tool_signatures,
-        model="gpt-3.5-turbo-1106",
+        model="gpt-4o",
     ) # 如果是其他兼容模型，比如deepseek，直接这里改模型名即可，其他都不用动
 
     print(chat_completion)

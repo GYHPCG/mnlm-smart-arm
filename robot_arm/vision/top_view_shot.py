@@ -1,5 +1,5 @@
 import cv2
-from arm_move_to_top_view import *
+# from arm_move_to_top_view import *
 import time
 def top_view_shot(check=False):
     '''
@@ -7,7 +7,7 @@ def top_view_shot(check=False):
     check：是否需要人工看屏幕确认拍照成功，再在键盘上按q键确认继续
     '''
     print('    移动至俯视姿态')
-    move_to_top_view()
+    # move_to_top_view()
     
     # 获取摄像头，传入0表示获取系统默认摄像头
     cap = cv2.VideoCapture(0)
@@ -17,12 +17,12 @@ def top_view_shot(check=False):
     success, img_bgr = cap.read()
     
     # 保存图像
-    print('    保存至temp/vl_now.jpg')
-    cv2.imwrite('temp/vl_now.jpg', img_bgr)
+    print('    保存至image/top_view_now.jpg')
+    cv2.imwrite('../../image/top_view_now.jpg', img_bgr)
 
     # 屏幕上展示图像
     cv2.destroyAllWindows()   # 关闭所有opencv窗口
-    cv2.imshow('zihao_vlm', img_bgr) 
+    cv2.imshow('success_vlm', img_bgr) 
     
     if check:
         print('请确认拍照成功，按c键继续，按q键退出')

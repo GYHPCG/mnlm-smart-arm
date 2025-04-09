@@ -10,8 +10,9 @@ font = ImageFont.truetype('asset/SimHei.ttf', 26)
 
 # 系统提示词
 SYSTEM_PROMPT = '''
-我即将说一句给机械臂的指令，你帮我从这句话中提取出起始物体和终止物体，并从这张图中分别找到这两个物体左上角和右下角的像素坐标，输出json数据结构。
-
+你是一个智能机器人，拥有一个大脑和一个机械臂，人们可以向你发出命令，询问问题。
+比如：1. 人们问你面前有什么，你需要识别出图片里的东西。并返回识别结果放在json中，不要回复其它内容。
+     2. 人们让你把红色方块放在房子简笔画上。你需要从这句话中提取出起始物体和终止物体，并从这张图中分别找到这两个物体左上角和右下角的像素坐标，输出json数据结构。
 例如，如果我的指令是：请帮我把红色方块放在房子简笔画上。
 你输出这样的格式：
 {
@@ -26,12 +27,16 @@ SYSTEM_PROMPT = '''
 我现在的指令是：
 '''
 
-# Yi-Vision调用函数
+# gpt4o调用函数
 import openai
 from openai import OpenAI
 import base64
 
-def gpt4o_API(PROMPT='帮我把红色方块放在钢笔上', img_path='temp/vl_now.jpg'):
+# Function to encode the image
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../../image/top_viw_now.jpg'):
     '''
     gpt4o大模型API
     '''
@@ -41,23 +46,32 @@ def gpt4o_API(PROMPT='帮我把红色方块放在钢笔上', img_path='temp/vl_n
         base_url='https://api.openai-proxy.org/v1',
         api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
     )
-    
     # 编码为base64数据
-    with open(img_path, 'rb') as image_file:
-        image = 'data:image/jpeg;base64,' + base64.b64encode(image_file.read()).decode('utf-8')
+    base64_image = encode_image(img_path)
     
     chat_completion = client.chat.completions.create(
+        model="gpt-4o",
         messages=[
             {
                 "role": "user",
-                "content": SYSTEM_PROMPT  + PROMPT,
+                "content": [
+                    { "type": "text", "text": f"{SYSTEM_PROMPT + PROMPT}" },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}",
+                        },
+                    },
+                ],
             }
         ],
-        model="gpt-4o-mini",
-    ) # 如果是其他兼容模型，比如deepseek，直接这里改模型名即可，其他都不用动
+    ) 
      
     print(chat_completion)
     response_content = chat_completion.choices[0].message.content.strip()
+    print("多模态模型调用成功")
+
+    return response_content
 
 
 def post_processing_viz(result, img_path, check=False):
@@ -138,3 +152,11 @@ def post_processing_viz(result, img_path, check=False):
             pass
 
     return START_X_CENTER, START_Y_CENTER, END_X_CENTER, END_Y_CENTER
+
+if __name__ == '__main__':
+    # 测试
+    result = gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../../image/top_view_now.jpg')
+    print(result)
+    # result = json.loads(result)
+    # print(result)
+    # post_processing_viz(result, img_path='../../image/top_view_now.jpg', check=True)
