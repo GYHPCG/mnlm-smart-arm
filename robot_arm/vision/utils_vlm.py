@@ -50,7 +50,7 @@ def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../../image/top
     base64_image = encode_image(img_path)
     
     chat_completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-2024-11-20",
         messages=[
             {
                 "role": "user",

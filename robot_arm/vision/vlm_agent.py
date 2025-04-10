@@ -30,7 +30,7 @@ def eye2hand(X_im=160, Y_im=120):
     Y_mc = int(np.interp(Y_im, Y_cali_im, Y_cali_mc))
 
     return X_mc, Y_mc
-def vlm_move(PROMPT='帮我把绿色方块放在小猪佩奇上', input_way='keyboard'):
+def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='keyboard'):
     '''
     多模态大模型识别图像，吸泵吸取并移动物体
     input_way：speech语音输入，keyboard键盘输入

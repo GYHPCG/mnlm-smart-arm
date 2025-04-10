@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-04-06 21:30:22
+LastEditTime: 2025-04-10 14:34:34
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -97,7 +97,7 @@ def assiant(command_str):
         # """,
         messages=[
             {
-                "role": "system",
+                "role": "user",
                 "content": PROMOPT,
             }
         ],
