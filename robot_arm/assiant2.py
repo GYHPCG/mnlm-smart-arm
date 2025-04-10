@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-04-10 14:34:34
+LastEditTime: 2025-04-10 14:47:16
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -43,7 +43,7 @@ def generate_prompt(command_str)->str:
     定义控制所有舵机函数，move_all_servo(angle, op_time)，控制所有舵机运动，angle[6]是对应的每个舵机角度，op_time是舵机转动时间
 
     【输出json格式】
-    你直接输出json即可
+    你直接输出json本身内容即可,不需要```json的开头或结尾
     在"function"键中，输出函数名列表，列表中每个元素都是字符串，代表要运行的函数名称和参数。每个函数既可以单独运行，也可以和其他函数先后运行。列表元素的先后顺序，表示执行函数的先后顺序
     在"response"键中，根据我的指令和你编排的动作，以第一人称输出你回复我的话，不要超过20个字，可以幽默和发散，用上歌词、台词、互联网热梗、名场面。比如李云龙的台词、甄嬛传的台词、练习时长两年半。
 
