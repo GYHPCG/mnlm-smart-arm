@@ -11,18 +11,23 @@ font = ImageFont.truetype('asset/SimHei.ttf', 26)
 # 系统提示词
 SYSTEM_PROMPT = '''
 你是一个智能机器人，拥有一个大脑和一个机械臂，人们可以向你发出命令，询问问题。
-比如：1. 人们问你面前有什么，你需要识别出图片里的东西。并返回识别结果放在json中，不要回复其它内容。
-     2. 人们让你把红色方块放在房子简笔画上。你需要从这句话中提取出起始物体和终止物体，并从这张图中分别找到这两个物体左上角和右下角的像素坐标，输出json数据结构。
+比如：1. 人们问你面前有什么，你需要识别出图片里的东西。并返回识别结果放在json中，不要回复其它内容,如```json开头和结尾。
+如，图片中有什么东西？你的输出格式是：
+{
+    "thing_name": ["红色方块", "绿色方块", "房子简笔画"]
+}
+     2. 人们让你把红色方块放在房子简笔画上。你需要从这句话中提取出起始物体和终止物体，坐标从左上角(0,0)开始，向右为x轴，向下为y轴，并从这张图中分别找到这两个物体左上角和右下角的像素坐标，输出json数据结构。
 例如，如果我的指令是：请帮我把红色方块放在房子简笔画上。
 你输出这样的格式：
 {
+ "thing_name": ["红色方块", "绿色方块", "房子简笔画"],
  "start":"红色方块",
  "start_xyxy":[[102,505],[324,860]],
  "end":"房子简笔画",
  "end_xyxy":[[300,150],[476,310]]
 }
 
-只回复json本身即可，不要回复其它内容
+只回复json本身即可，不要回复其它内容,如```json的开头或结尾。
 
 我现在的指令是：
 '''
@@ -67,9 +72,10 @@ def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../../image/top
         ],
     ) 
      
-    print(chat_completion)
+    # print(chat_completion)
     response_content = chat_completion.choices[0].message.content.strip()
-    print("多模态模型调用成功")
+    print("vlm 多模态模型调用成功")
+    print(response_content)
 
     return response_content
 
@@ -85,6 +91,9 @@ def post_processing_viz(result, img_path, check=False):
     img_bgr = cv2.imread(img_path)
     img_h = img_bgr.shape[0]
     img_w = img_bgr.shape[1]
+
+    # 输出长和宽
+    print('    图片长宽：', img_w, img_h)
     # 缩放因子
     FACTOR = 999
     # 起点物体名称
@@ -92,20 +101,20 @@ def post_processing_viz(result, img_path, check=False):
     # 终点物体名称
     END_NAME = result['end']
     # 起点，左上角像素坐标
-    START_X_MIN = int(result['start_xyxy'][0][0] * img_w / FACTOR)
-    START_Y_MIN = int(result['start_xyxy'][0][1] * img_h / FACTOR)
+    START_X_MIN = int(result['start_xyxy'][0][0])
+    START_Y_MIN = int(result['start_xyxy'][0][1])
     # 起点，右下角像素坐标
-    START_X_MAX = int(result['start_xyxy'][1][0] * img_w / FACTOR)
-    START_Y_MAX = int(result['start_xyxy'][1][1] * img_h / FACTOR)
+    START_X_MAX = int(result['start_xyxy'][1][0])
+    START_Y_MAX = int(result['start_xyxy'][1][1])
     # 起点，中心点像素坐标
     START_X_CENTER = int((START_X_MIN + START_X_MAX) / 2)
     START_Y_CENTER = int((START_Y_MIN + START_Y_MAX) / 2)
     # 终点，左上角像素坐标
-    END_X_MIN = int(result['end_xyxy'][0][0] * img_w / FACTOR)
-    END_Y_MIN = int(result['end_xyxy'][0][1] * img_h / FACTOR)
+    END_X_MIN = int(result['end_xyxy'][0][0])
+    END_Y_MIN = int(result['end_xyxy'][0][1])
     # 终点，右下角像素坐标
-    END_X_MAX = int(result['end_xyxy'][1][0] * img_w / FACTOR)
-    END_Y_MAX = int(result['end_xyxy'][1][1] * img_h / FACTOR)
+    END_X_MAX = int(result['end_xyxy'][1][0])
+    END_Y_MAX = int(result['end_xyxy'][1][1])
     # 终点，中心点像素坐标
     END_X_CENTER = int((END_X_MIN + END_X_MAX) / 2)
     END_Y_CENTER = int((END_Y_MIN + END_Y_MAX) / 2)
@@ -129,13 +138,13 @@ def post_processing_viz(result, img_path, check=False):
     draw.text((END_X_MIN, END_Y_MIN-32), END_NAME, font=font, fill=(0, 0, 255, 1)) # 文字坐标，中文字符串，字体，rgba颜色
     img_bgr = cv2.cvtColor(np.array(img_pil), cv2.COLOR_RGB2BGR) # RGB转BGR
     # 保存可视化效果图
-    cv2.imwrite('temp/vl_now_viz.jpg', img_bgr)
+    cv2.imwrite('../../image/vl_now_viz.jpg', img_bgr)
 
     formatted_time = time.strftime("%Y%m%d%H%M", time.localtime())
     cv2.imwrite('visualizations/{}.jpg'.format(formatted_time), img_bgr)
 
     # 在屏幕上展示可视化效果图
-    cv2.imshow('zihao_vlm', img_bgr) 
+    cv2.imshow('success_vlm', img_bgr) 
 
     if check:
         print('    请确认可视化成功，按c键继续，按q键退出')

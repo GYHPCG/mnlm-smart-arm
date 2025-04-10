@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-04-10 14:47:16
+LastEditTime: 2025-04-10 15:28:58
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -36,7 +36,6 @@ def generate_prompt(command_str)->str:
     你有一个大脑和一个机械臂，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来)。
     【以下是所有内置函数介绍】
     定义机械臂跳舞函数，arm_dance()，让机械臂跳舞
-    定义机械臂归中函数，arm_zero()，让机械臂回到原点
     定义机械臂rgb灯光函数，rgb_control(r,g,b)，控制机械臂灯光颜色
     定义机械臂归中函数，arm_zero()，让机械臂回到原点
     定义控制第i个舵机函数，move_single_servo(id, angle, op_time)，控制第i个舵机运动，id是舵机编号，angle是舵机角度，op_time是舵机转动时间
