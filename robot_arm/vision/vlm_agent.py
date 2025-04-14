@@ -6,7 +6,7 @@ from utils_vlm import *
 from top_view_shot import *
 import time
 import json
-
+from grab_block import start_to_end
 def eye2hand(X_im=160, Y_im=120):
     '''
     输入目标点在图像中的像素坐标，转换为机械臂坐标
@@ -94,7 +94,7 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     ## 第七步：吸泵吸取移动物体
     print('第七步：吸泵吸取移动物体')
     # pump_move(mc=mc, XY_START=[START_X_MC, START_Y_MC], XY_END=[END_X_MC, END_Y_MC])
-    
+    start_to_end()
     ## 第八步：收尾
     print('第八步：任务完成')
     # GPIO.cleanup()            # 释放GPIO pin channel
