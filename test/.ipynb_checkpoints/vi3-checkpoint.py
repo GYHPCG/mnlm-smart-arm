@@ -99,6 +99,8 @@ def pixel_to_servo_angles(x_pixel, y_pixel, depth, cam, DFbot1, DFbot2):
 #     joint_angles =  [ 0. ,        -0.40185891 , 0.51018213  ,3.0328737  , 0.        ]
 #     joint_angles = [-0.00505628, -0.63278889, -0.03250824, -2.47971392, -0.00501725]
 #     joint_angles = [ 0.05250454,-0.67323703,0.68610388,3.12762084,0.0524625 ]
+#     joint_angles = [ 2.13735427e-04, -6.52597598e-01,  6.64180612e-01,  3.12866502e+00,
+#         2.13539156e-04]
     print("step3")
     print(joint_angles)
     # 转换为舵机角度
@@ -116,18 +118,21 @@ def init_grab(x_pixel,y_pixel):
     DFbot1, DFbot2 = initialize_robot()
 
     # 输入相机坐标和深度
-    x_pixel = 556  # 示例像素坐标 x
-    y_pixel = 326  # 示例像素坐标 y
-    depth = 0.05    # 示例深度（单位：米）
-
+    x_pixel = 356  # 示例像素坐标 x
+    y_pixel = 226  # 示例像素坐标 y
+    depth = 0.066    # 示例深度（单位：米）
+   
+    move_to_ready()
+    top_view_shot()
     # 计算舵机角度
     servo_angles = pixel_to_servo_angles(x_pixel, y_pixel, depth, cam, DFbot1, DFbot2)
 
-    print("舵机角度：", servo_angles)
-    move_to_ready()
-    top_view_shot()
-#     servo_angles = [89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186]
+#     print("舵机角度：", servo_angles)
+   
+ #     servo_angles = [89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186]
     arm_move(servo_angles)
     arm_clamp_block(1)
+    top_view_shot()
+    arm_clamp_block(0)
 if __name__ == "__main__":
     init_grab( x_pixel = 256,y_pixel = 128)

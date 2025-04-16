@@ -25,7 +25,7 @@ def arm_move(p, s_time = 1000):
             Arm.Arm_serial_servo_write(id, p[i], int(s_time*1.2))
         else :
             Arm.Arm_serial_servo_write(id, p[i], s_time)
-        time.sleep(.01)
+        time.sleep(1)
     time.sleep(s_time/1000)
 
 # DOFBOT moves up
@@ -54,8 +54,9 @@ def move_to_ready():
     time.sleep(1)
 
 def top_view_shot():
-    Arm.Arm_serial_servo_write6(89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186,0,1000)
+#     Arm.Arm_serial_servo_write6(89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186,0,1000)
 #     arm_move([89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186],1000)
+    Arm.Arm_serial_servo_write6(0+90,60, 90-60, 180-180, 0+90,0,1000)
     time.sleep(3)
 
 # Grab a block from the gray block and place it on the yellow block.
