@@ -65,7 +65,11 @@ def pixel_to_servo_angles(x_pixel, y_pixel, depth, cam, DFbot1, DFbot2):
         [0., 913.16565134, 236.9305],
         [0., 0., 1.]
     ])
-
+#     K = np.array([
+#         [1.25773256e+05, 0.00000000e+00, 9.59564172e+02],
+#         [0.00000000e+00, 1.25725904e+05, 9.62878492e+02],
+#         [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]
+#     ])
     # 机械臂的正运动学，计算当前位姿
     T1 = DFbot1.fkine([0, -np.pi / 3, np.pi / 3, np.pi, 0, 0])
     T1 = DFbot1.fkine([0,-np.pi/3,np.pi/3,np.pi,0,np.pi/2])
@@ -118,8 +122,8 @@ def init_grab(x_pixel,y_pixel):
     DFbot1, DFbot2 = initialize_robot()
 
     # 输入相机坐标和深度
-    x_pixel = 356  # 示例像素坐标 x
-    y_pixel = 226  # 示例像素坐标 y
+    x_pixel = 456  # 示例像素坐标 x
+    y_pixel = 326  # 示例像素坐标 y
     depth = 0.066    # 示例深度（单位：米）
    
     move_to_ready()
@@ -127,7 +131,7 @@ def init_grab(x_pixel,y_pixel):
     # 计算舵机角度
     servo_angles = pixel_to_servo_angles(x_pixel, y_pixel, depth, cam, DFbot1, DFbot2)
 
-#     print("舵机角度：", servo_angles)
+    print("舵机角度：", servo_angles)
    
  #     servo_angles = [89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186]
     arm_move(servo_angles)
@@ -135,4 +139,4 @@ def init_grab(x_pixel,y_pixel):
     top_view_shot()
     arm_clamp_block(0)
 if __name__ == "__main__":
-    init_grab( x_pixel = 256,y_pixel = 128)
+    init_grab( x_pixel = 456,y_pixel = 428)

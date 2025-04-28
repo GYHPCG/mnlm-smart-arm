@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 import numpy as np
-import math
 from spatialmath.base import e2h
 from roboticstoolbox import DHRobot, RevoluteMDH
 from machinevisiontoolbox import CentralCamera
-from grab_block import arm_move,move_to_ready,top_view_shot,arm_clamp_block
+
 def initialize_camera():
     """
     初始化相机模型
@@ -48,48 +46,47 @@ def initialize_robot():
     )
     return DFbot1, DFbot2
 
-def pixel_to_servo_angles(x_pixel, y_pixel, depth, cam, DFbot1, DFbot2):
+def compute_target_pose(cam, DFbot1, target_point):
     """
-    将相机坐标 (x, y) 和深度转换为舵机角度
-    :param x_pixel: 相机坐标 x
-    :param y_pixel: 相机坐标 y
-    :param depth: 深度值
-    :param cam: 相机模型
-    :param DFbot1: 机械臂模型 1
-    :param DFbot2: 机械臂模型 2
-    :return: 舵机角度列表
+    计算目标点的位姿矩阵
     """
-    # 相机内参矩阵
-    K = np.array([
+    # 视觉校正
+    T1 = DFbot1.fkine([0, -np.pi / 3, np.pi / 3, np.pi, 0, 0])
+
+    # 投影到图像平面
+    p = cam.project_point(target_point, pose=T1)
+    cam.plot_point(target_point, pose=T1)
+
+    # 求解深度
+    mtx = np.array([
         [919.21981864, 0., 356.41270451],
         [0., 913.16565134, 236.9305],
         [0., 0., 1.]
     ])
-#     K = np.array([
-#         [1.25773256e+05, 0.00000000e+00, 9.59564172e+02],
-#         [0.00000000e+00, 1.25725904e+05, 9.62878492e+02],
-#         [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]
-#     ])
-    # 机械臂的正运动学，计算当前位姿
-    T1 = DFbot1.fkine([0, -np.pi / 3, np.pi / 3, np.pi, 0, 0])
-    T1 = DFbot1.fkine([0,-np.pi/3,np.pi/3,np.pi,0,np.pi/2])
-    # 外参矩阵（位姿矩阵的逆）
+    K = mtx
     extrinsic = np.linalg.inv(T1)
+    point_camera = extrinsic @ np.append(target_point, 1)
+    point_2d = K @ point_camera[:3]
+    depth = point_2d[2]
+    point_2d /= depth
 
-    # 将像素坐标转换为相机坐标系中的点
-    point_2d = depth * np.array([x_pixel, y_pixel, 1])
+    # 逆投影到三维空间
+    xaxis = 356.41270451 - 100
+    yaxis = 226.9298497 + 50    
+    point_2d = depth * np.array([xaxis, yaxis, 1])
     point_camera = e2h(np.linalg.inv(K) @ point_2d)
-
-    # 将相机坐标系中的点转换到世界坐标系
     new_point_3d = np.array(np.linalg.inv(extrinsic) @ point_camera)
-    
-    print("step1")
-    # 使用逆运动学求解关节角度
+
+    return new_point_3d
+
+def solve_inverse_kinematics(DFbot2, target_3d):
+    """
+    使用逆运动学求解关节角度
+    """
     T21 = DFbot2.fkine([0, -np.pi / 3, np.pi / 3, np.pi, 0])
     T2 = np.array(T21)
-    T2[:, -1] = new_point_3d.flatten()
-    
-    print("step2")
+    T2[:, -1] = target_3d.flatten()
+
     sol = DFbot2.ikine_LM(
         T2,
         q0=[0, -np.pi / 3, np.pi / 3, np.pi, 0],
@@ -98,16 +95,12 @@ def pixel_to_servo_angles(x_pixel, y_pixel, depth, cam, DFbot1, DFbot2):
         joint_limits=True,
         tol=0.001
     )
-    joint_angles = sol.q
-#     joint_angles = [ 0.   ,      -0.65289473 , 0.66444728 , 3.12870043 , 0.        ]
-#     joint_angles =  [ 0. ,        -0.40185891 , 0.51018213  ,3.0328737  , 0.        ]
-#     joint_angles = [-0.00505628, -0.63278889, -0.03250824, -2.47971392, -0.00501725]
-#     joint_angles = [ 0.05250454,-0.67323703,0.68610388,3.12762084,0.0524625 ]
-#     joint_angles = [ 2.13735427e-04, -6.52597598e-01,  6.64180612e-01,  3.12866502e+00,
-#         2.13539156e-04]
-    print("step3")
-    print(joint_angles)
-    # 转换为舵机角度
+    return sol.q
+
+def convert_to_servo_angles(joint_angles):
+    """
+    将关节角度转换为舵机角度
+    """
     deg = [x / np.pi * 180 for x in joint_angles]
     d1 = deg[0] + 90
     d2 = -deg[1]
@@ -116,27 +109,24 @@ def pixel_to_servo_angles(x_pixel, y_pixel, depth, cam, DFbot1, DFbot2):
     d5 = deg[4] + 90
     return [d1, d2, d3, d4, d5]
 
-def init_grab(x_pixel,y_pixel):
+def main():
     # 初始化相机和机械臂
     cam = initialize_camera()
     DFbot1, DFbot2 = initialize_robot()
 
-    # 输入相机坐标和深度
-    x_pixel = 456  # 示例像素坐标 x
-    y_pixel = 326  # 示例像素坐标 y
-    depth = 0.066    # 示例深度（单位：米）
-   
-    move_to_ready()
-    top_view_shot()
-    # 计算舵机角度
-    servo_angles = pixel_to_servo_angles(x_pixel, y_pixel, depth, cam, DFbot1, DFbot2)
+    # 输入目标点
+    target_point = np.array([-0.165, 0, -0.01])
+
+    # 计算目标点的位姿
+    target_3d = compute_target_pose(cam, DFbot1, target_point)
+
+    # 使用逆运动学求解关节角度
+    joint_angles = solve_inverse_kinematics(DFbot2, target_3d)
+
+    # 转换为舵机角度
+    servo_angles = convert_to_servo_angles(joint_angles)
 
     print("舵机角度：", servo_angles)
-   
- #     servo_angles = [89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186]
-    arm_move(servo_angles)
-    arm_clamp_block(1)
-    top_view_shot()
-    arm_clamp_block(0)
+
 if __name__ == "__main__":
-    init_grab( x_pixel = 456,y_pixel = 428)
+    main()
