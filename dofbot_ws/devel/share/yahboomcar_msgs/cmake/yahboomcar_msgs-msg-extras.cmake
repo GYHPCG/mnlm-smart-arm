@@ -1,0 +1,2 @@
+set(yahboomcar_msgs_MESSAGE_FILES "/home/dofbot/dofbot_ws/src/yahboomcar_msgs/msg/Position.msg;/home/dofbot/dofbot_ws/src/yahboomcar_msgs/msg/PointArray.msg;/home/dofbot/dofbot_ws/src/yahboomcar_msgs/msg/Image_Msg.msg;/home/dofbot/dofbot_ws/src/yahboomcar_msgs/msg/Target.msg;/home/dofbot/dofbot_ws/src/yahboomcar_msgs/msg/TargetArray.msg;/home/dofbot/dofbot_ws/src/yahboomcar_msgs/msg/ArmJoint.msg")
+set(yahboomcar_msgs_SERVICE_FILES "/home/dofbot/dofbot_ws/src/yahboomcar_msgs/srv/RobotArmArray.srv;/home/dofbot/dofbot_ws/src/yahboomcar_msgs/srv/kinemarics.srv")
