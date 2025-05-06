@@ -1,6 +1,7 @@
 import cv2
 # from arm_move_to_top_view import *
 import time
+
 def top_view_shot(check=False):
     '''
     拍摄一张图片并保存
@@ -17,26 +18,27 @@ def top_view_shot(check=False):
     success, img_bgr = cap.read()
     
     # 保存图像
-    print('    保存至image/top_view_now.jpg')
-    cv2.imwrite('../../image/top_view_now.jpg', img_bgr)
+    print('    保存至image/top_view_now11.jpg')
+    cv2.imwrite('../../image/top_view_now11.jpg', img_bgr)
 
     # 屏幕上展示图像
     cv2.destroyAllWindows()   # 关闭所有opencv窗口
     cv2.imshow('success_vlm', img_bgr) 
     
-    if check:
-        print('请确认拍照成功，按c键继续，按q键退出')
-        while(True):
-            key = cv2.waitKey(10) & 0xFF
-            if key == ord('c'): # 按c键继续
-                break
-            if key == ord('q'): # 按q键退出
-                # exit()
-                cv2.destroyAllWindows()   # 关闭所有opencv窗口
-                raise NameError('按q退出')
-    else:
-        if cv2.waitKey(10) & 0xFF == None:
-            pass
+    # if check:
+    #     print('请确认拍照成功，按c键继续，按q键退出')
+    #     while(True):
+    #         key = cv2.waitKey(10) & 0xFF
+    #         if key == ord('c'): # 按c键继续
+    #             break
+    #         if key == ord('q'): # 按q键退出
+    #             # exit()
+    #             cv2.destroyAllWindows()   # 关闭所有opencv窗口
+    #             raise NameError('按q退出')
+    # else:
+    #     if cv2.waitKey(10) & 0xFF == None:
+    #         pass
+    # time.sleep(5)
         
     # 关闭摄像头
     cap.release()

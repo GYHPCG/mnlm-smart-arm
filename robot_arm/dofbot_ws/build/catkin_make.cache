@@ -1,0 +1,2 @@
+dofbot_color_identify:dofbot_config:dofbot_garbage_yolov4_tiny:dofbot_snake_follow:dofbot_visual
+-DCATKIN_DEVEL_PREFIX=/home/dofbot/code/mnlm-smart-arm/robot_arm/dofbot_ws/devel -DCMAKE_INSTALL_PREFIX=/home/dofbot/code/mnlm-smart-arm/robot_arm/dofbot_ws/install -G Unix Makefiles

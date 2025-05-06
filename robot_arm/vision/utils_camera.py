@@ -8,7 +8,7 @@ FilePath: \code\mnlm-smart-arm\robot_arm\vision\demo_capture.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
 import cv2
-
+from grab_block import start_to_end,vlm_move_ready
 def bgr8_to_jpeg(value, quality=75):
     return bytes(cv2.imencode('.jpg', value)[1])
 
@@ -34,4 +34,5 @@ def get_camera():
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
+    vlm_move_ready()
     get_camera()
