@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-07 17:33:23
+LastEditTime: 2025-05-07 22:18:57
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -22,8 +22,13 @@ from move_all_servo import move_all_servo
 import json
 from listener import get_received_command 
 import os
+from vision.vlm_agent import vlm_move
 
-      
+import sys
+sys.path.append("/home/dofbot/code/mnlm-smart-arm/robot_arm/dofbot_ws/src")
+from dofbot_color_follow.follow_color_act import follow_color_run 
+from dofbot_snake_follow.scripts.snake_follow import  snake_follow_run
+
 def assiant(command_str):
     print(command_str)
     # 将字符串解析为字典

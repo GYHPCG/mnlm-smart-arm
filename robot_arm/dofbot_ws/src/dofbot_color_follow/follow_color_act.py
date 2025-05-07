@@ -1,9 +1,17 @@
+'''
+Author: '破竹' '2986779260@qq.com'
+Date: 2025-05-07 16:33:17
+LastEditors: '破竹' '2986779260@qq.com'
+LastEditTime: 2025-05-07 22:17:25
+FilePath: \code\mnlm-smart-arm\robot_arm\dofbot_ws\src\dofbot_color_follow\follow_color_act.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
 import cv2
 import Arm_Lib
 from color_follow import color_follow  # 假设 color_follow 模块已实现追踪逻辑
 import random
 
-def run(color='red'):
+def follow_color_run(color='red'):
     """
     运行颜色追踪程序
     :param color: 要追踪的颜色，可选 'red', 'green', 'blue', 'yellow'
@@ -65,4 +73,4 @@ def run(color='red'):
 
 if __name__ == "__main__":
     # 示例：直接调用函数
-    run(color='red')  # 修改此处颜色参数即可
+    follow_color_run(color='red')  # 修改此处颜色参数即可

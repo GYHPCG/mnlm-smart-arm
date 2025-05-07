@@ -6,8 +6,6 @@ LastEditTime: 2025-05-07 18:27:06
 FilePath: \code\mnlm-smart-arm\robot_arm\command_receiver.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
-import rospy
-from std_msgs.msg import String
 from flask import Flask, request
 import json
 import threading
@@ -24,10 +22,6 @@ def json_example():
         content = request.get_json()
         command_str = json.dumps(content, ensure_ascii=False)
         print("接受 JSON command: %s\n" % command_str)
-        # rospy.loginfo("Received JSON command: %s" % command_str)
-        # msg = String()
-        # msg.data = command_str
-        # publisher.publish(msg)
         return "JSON command received and published!", 200
     else:
         return "Request was not JSON", 400
@@ -37,12 +31,7 @@ def flask_thread():
 
 
 if __name__ == "__main__":
-    # rospy.init_node("command_receiver_node", anonymous=True)
-    # publisher = rospy.Publisher("json_command_topic", String, queue_size=10)
-
-    # # Run Flask in a separate thread
     threading.Thread(target=flask_thread, daemon=True).start()
-
    
     # 主线程中处理命令
     while True:
