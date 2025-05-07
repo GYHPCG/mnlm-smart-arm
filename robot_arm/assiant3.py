@@ -1,0 +1,37 @@
+'''
+Author: '破竹' '2986779260@qq.com'
+Date: 2025-03-25 22:13:55
+LastEditors: '破竹' '2986779260@qq.com'
+LastEditTime: 2025-05-07 17:33:23
+FilePath: \code\mnlm-smart-arm\assiant.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
+
+from openai import OpenAI
+from arm_dance import arm_dance
+from arm_clamp_block import arm_clamp_block
+from arm_move import arm_move
+from arm_rgb_control import rgb_control
+from arm_zero import arm_zero 
+from arm_read_servo import read_servo
+from arm_ctrl_servo import ctrl_servo
+from arm_left_right import left_right
+from arm_rotate import arm_rotate
+from move_single_servo import move_single_servo
+from move_all_servo import move_all_servo
+import json
+from listener import get_received_command 
+import os
+
+      
+def assiant(command_str):
+    print(command_str)
+    # 将字符串解析为字典
+    response_content = json.loads(command_str)
+    
+    for each in response_content['function']: # 运行智能体规划编排的每个函数
+            print('开始执行动作', each)
+            eval(each)
+
+if __name__ == '__main__':
+    assiant("旋转180度")
