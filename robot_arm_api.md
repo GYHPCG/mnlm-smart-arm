@@ -1,5 +1,3 @@
-
-
 ## Control single servo
 
 The API corresponding to controlling a single bus servo is：

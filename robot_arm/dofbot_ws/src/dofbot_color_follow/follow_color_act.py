@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-05-07 16:33:17
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-07 22:17:25
+LastEditTime: 2025-05-07 22:47:19
 FilePath: \code\mnlm-smart-arm\robot_arm\dofbot_ws\src\dofbot_color_follow\follow_color_act.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -11,11 +11,22 @@ import Arm_Lib
 from color_follow import color_follow  # 假设 color_follow 模块已实现追踪逻辑
 import random
 
+# 添加全局变量控制运行状态
+is_running = False
+
+def stop_color_follow():
+    """停止颜色追踪"""
+    global is_running
+    is_running = False
+
 def follow_color_run(color='red'):
     """
     运行颜色追踪程序
     :param color: 要追踪的颜色，可选 'red', 'green', 'blue', 'yellow'
     """
+    global is_running
+    is_running = True
+    
     # 初始化机械臂
     Arm = Arm_Lib.Arm_Device()
     joints_0 = [90, 135, 20, 25, 90, 30]
@@ -43,7 +54,7 @@ def follow_color_run(color='red'):
     random_colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(255)]
     
     try:
-        while cap.isOpened():
+        while cap.isOpened() and is_running:
             ret, frame = cap.read()
             if not ret: break
             
@@ -69,7 +80,8 @@ def follow_color_run(color='red'):
         cap.release()
         cv2.destroyAllWindows()
         # 机械臂复位
-        Arm.Arm_serial_servo_write6_array(joints0, 1000)
+        Arm.Arm_serial_servo_write6_array(joints_0, 1000)
+        is_running = False
 
 if __name__ == "__main__":
     # 示例：直接调用函数
