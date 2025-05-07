@@ -35,7 +35,7 @@ def eye2hand(X_im=160, Y_im=120):
 
     return X_mc, Y_mc
     
-def vlm_move(PROMPT='帮我把黑色盖子放在红色盖子上', input_way='keyboard'):
+def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='keyboard'):
     '''
     多模态大模型识别图像，吸泵吸取并移动物体
     input_way：speech语音输入，keyboard键盘输入
@@ -52,7 +52,7 @@ def vlm_move(PROMPT='帮我把黑色盖子放在红色盖子上', input_way='key
     print('第一步：完成手眼标定')
     
     ## 第二步：发出指令
-    # PROMPT_BACKUP = '帮我把绿色方块放在小猪佩奇上' # 默认指令
+    # PROMPT_BACKUP = '帮我把绿色方块放在红色方块上' # 默认指令
     
     # if input_way == 'keyboard':
     #     PROMPT = input('第二步：输入指令')
