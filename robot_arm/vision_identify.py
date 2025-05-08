@@ -1,8 +1,6 @@
 from top_view_shot import *
 from grab_block import start_to_end,vlm_move_ready
 from arm_voice_broadcast import speech
-import sys 
-sys.path.append("..") 
 from utils_vlm import *
 
 def identify_images(PROMPT="图像中有什么东西"):

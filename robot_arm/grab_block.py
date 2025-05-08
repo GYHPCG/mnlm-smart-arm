@@ -17,7 +17,7 @@ def arm_clamp_block(enable):
 
     
 # Define control DOFBOT function, control No.1-No.5 servo，p=[S1,S2,S3,S4,S5]
-def arm_move(p, s_time = 500):
+def arm_move(p, s_time = 1000):
     for i in range(5):
         id = i + 1
         if id == 5:
@@ -25,7 +25,7 @@ def arm_move(p, s_time = 500):
             Arm.Arm_serial_servo_write(id, p[i], int(s_time*1.2))
         else :
             Arm.Arm_serial_servo_write(id, p[i], s_time)
-        time.sleep(.01)
+        time.sleep(1)
     time.sleep(s_time/1000)
 
 # DOFBOT moves up
@@ -52,6 +52,16 @@ def move_to_ready():
     arm_clamp_block(0)
     arm_move(p_mould, 1000)
     time.sleep(1)
+
+def vlm_move_ready():
+    xy=[90,135]
+    joints_0 = [xy[0], xy[1], 0, 0, 90, 30]
+    Arm.Arm_serial_servo_write6_array(joints_0, 1000)
+def top_view_shot_full_fushi():
+#     Arm.Arm_serial_servo_write6(89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186,0,1000)
+#     arm_move([89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186],1000)
+    Arm.Arm_serial_servo_write6(0+90,60, 90-60, 180-180, 0+90,0,1000)
+    time.sleep(3)
 
 # Grab a block from the gray block and place it on the yellow block.
 def gray_to_yellow():

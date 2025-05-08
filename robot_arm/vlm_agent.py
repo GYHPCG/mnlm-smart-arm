@@ -1,6 +1,13 @@
+'''
+Author: '破竹' '2986779260@qq.com'
+Date: 2025-05-08 18:11:00
+LastEditors: '破竹' '2986779260@qq.com'
+LastEditTime: 2025-05-08 18:13:10
+FilePath: \code\mnlm-smart-arm\robot_arm\vlm_agent.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
 # -*- coding: utf-8 -*-
-import sys 
-sys.path.append("..") 
+
 from utils_vlm import *
 from arm_zero import *
 from top_view_shot import *
