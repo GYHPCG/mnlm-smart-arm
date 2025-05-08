@@ -46,21 +46,7 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     # 机械臂归零
     print('机械臂归零')
     arm_zero()
-    time.sleep(3)
     
-    ## 第一步：完成手眼标定
-    print('第一步：完成手眼标定')
-    
-    ## 第二步：发出指令
-    # PROMPT_BACKUP = '帮我把绿色方块放在红色方块上' # 默认指令
-    
-    # if input_way == 'keyboard':
-    #     PROMPT = input('第二步：输入指令')
-    #     if PROMPT == '':
-    #         PROMPT = PROMPT_BACKUP
-    # elif input_way == 'speech':
-    #     record() # 录音
-    #     PROMPT = speech_recognition() # 语音识别
     print('第二步，给出的指令是：', PROMPT)
     
     ## 第三步：拍摄俯视图
@@ -104,20 +90,6 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     END_X_MAX = int(result['end_xyxy'][1][0])
     END_Y_MAX = int(result['end_xyxy'][1][1])
     
-    # ## 第六步：手眼标定转换为机械臂坐标
-    # print('第六步：手眼标定，将像素坐标转换为机械臂坐标')
-    # # 起点，机械臂坐标
-    # START_X_MC, START_Y_MC = eye2hand(START_X_CENTER, START_Y_CENTER)
-    # # 终点，机械臂坐标
-    # END_X_MC, END_Y_MC = eye2hand(END_X_CENTER, END_Y_CENTER)
-    
-    # ## 第七步：吸泵吸取移动物体
-    # print('第七步：吸泵吸取移动物体')
-    # # pump_move(mc=mc, XY_START=[START_X_MC, START_Y_MC], XY_END=[END_X_MC, END_Y_MC])
-    # start_to_end()
-    ## 第八步：收尾
-    # init_grab(START_X_CENTER,START_Y_CENTER)
-    # init_grab(END_X_CENTER, END_Y_CENTER)
     target      = identify_GetTarget()
     start_targets = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
     end_targets = target.get_arm_coordinates(END_X_MIN,END_Y_MIN,END_X_MAX,END_Y_MAX)
@@ -136,7 +108,6 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
         target.vlm_target_run(ends)
          
     print('第八步：任务完成')
-    # GPIO.cleanup()            # 释放GPIO pin channel
     cv2.destroyAllWindows()   # 关闭所有opencv窗口
     # exit()
     

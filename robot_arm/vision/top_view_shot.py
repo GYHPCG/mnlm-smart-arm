@@ -22,8 +22,8 @@ def top_view_shot(check=False):
     cv2.imwrite('../../image/top_view_now11.jpg', img_bgr)
 
     # 屏幕上展示图像
-    cv2.destroyAllWindows()   # 关闭所有opencv窗口
-    cv2.imshow('success_vlm', img_bgr) 
+    # cv2.destroyAllWindows()   # 关闭所有opencv窗口
+    # cv2.imshow('success_vlm', img_bgr) 
     
     # if check:
     #     print('请确认拍照成功，按c键继续，按q键退出')
@@ -43,7 +43,7 @@ def top_view_shot(check=False):
     # 关闭摄像头
     cap.release()
     # 关闭图像窗口
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     top_view_shot(check=True)
