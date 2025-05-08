@@ -3,7 +3,7 @@ from grab_block import start_to_end,vlm_move_ready
 from arm_voice_broadcast import speech
 from utils_vlm import *
 
-def identify_images(PROMPT="图像中有什么东西"):
+def vision_identify(PROMPT="图像中有什么东西"):
     ## 第一步：拍摄俯视图
     print('第1步：拍摄俯视图')
     vlm_move_ready()
@@ -11,7 +11,7 @@ def identify_images(PROMPT="图像中有什么东西"):
     top_view_shot(check=True)
 
     print('第2步：将图片输入给多模态视觉大模型')
-    img_path = '../../image/top_view_now11.jpg'
+    img_path = '../image/top_view_now11.jpg'
 
     n = 1
     while n < 5:
@@ -31,6 +31,6 @@ def identify_images(PROMPT="图像中有什么东西"):
 
 if __name__ == '__main__':
     print("run identify")
-    identify_images("图像中有什么东西")
+    vision_identify("图像中有什么东西")
 
         

@@ -15,6 +15,7 @@ import time
 import json
 from grab_block import start_to_end,vlm_move_ready
 from vision_grab import *
+import sys
 sys.path.append("/home/dofbot/code/mnlm-smart-arm/robot_arm/dofbot_ws/src/dofbot_color_identify/scripts")
 from grab_target import *
 
@@ -64,7 +65,7 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     
     ## 第四步：将图片输入给多模态视觉大模型
     print('第四步：将图片输入给多模态视觉大模型')
-    img_path = '../../image/top_view_now11.jpg'
+    img_path = '../image/top_view_now11.jpg'
     
     n = 1
     while n < 5:
