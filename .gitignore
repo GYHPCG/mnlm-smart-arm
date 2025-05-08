@@ -1,2 +1,7 @@
 *.mp3
 __pychache__/
+.env
+.vscode/
+.ipynb_checkpoints/
+
+
