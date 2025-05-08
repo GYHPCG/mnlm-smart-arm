@@ -19,7 +19,7 @@ def top_view_shot(check=False):
     
     # 保存图像
     print('    保存至image/top_view_now11.jpg')
-    cv2.imwrite('../../image/top_view_now11.jpg', img_bgr)
+    cv2.imwrite('../image/top_view_now11.jpg', img_bgr)
 
     # 屏幕上展示图像
     # cv2.destroyAllWindows()   # 关闭所有opencv窗口

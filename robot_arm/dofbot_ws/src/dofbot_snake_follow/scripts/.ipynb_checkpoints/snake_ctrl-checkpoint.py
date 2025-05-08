@@ -5,14 +5,14 @@ import rospy
 import threading
 import Arm_Lib
 from time import sleep
-from snake_move import snake_move
+from .snake_move import snake_move
 from dofbot_info.srv import kinemarics, kinemaricsRequest, kinemaricsResponse
 
 
 class snake_ctrl:
     def __init__(self):
         '''
-        初始化一些参数
+        Initialize some parameters
         '''
         self.sbus = Arm_Lib.Arm_Device()
         self.arm_move = snake_move()
@@ -21,44 +21,44 @@ class snake_ctrl:
         self.cur_joint = [0.0, 0.0, 0.0, 0.0, 0.0]
         self.Posture = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.move_time = 500
-        # 设置移动状态
+
         self.grap_status = 'Waiting'
-        # 夹爪加紧角度
-        self.grap_joint = 135
+        # Angle of servo when clip close
+        self.grap_joint = 145
         self.num = 1
         self.move_num = 1
-        # 创建节点句柄
+
         self.n = rospy.init_node('dofbot_snake', anonymous=True)
-        # 创建用于调用的ROS服务的句柄。
+
         self.client = rospy.ServiceProxy("dofbot_kinemarics", kinemarics)
 
     def read_joint(self):
         '''
-        循环读取舵机的当前角度
+        Read current angle of the servo in loop
         '''
         num = 0
         for i in range(1, 6):
             while 1:
-                # 读取舵机角度
+
                 joint = self.sbus.Arm_serial_servo_read(i)
-                # 每十次读取不到数据,便打印警告
-                # if num % 10 == 0: print("请检查!!!!!接触不良!!!!!")
-                # 每当读取到数据时,跳出循环,返回结果
+
+                # if num % 10 == 0: print("Please check!Poor contact!")
+
                 if joint != None:
                     self.cur_joint[i - 1] = joint
                     break
                 num += 1
-        # 更新舵机为当前角度
-        # print("当前关节角度 : {}".format(cur_joint))
+
+        # print("current angle of the servo: {}".format(cur_joint))
 
     def get_Posture(self):
         '''
-        发布关节角度,获取位置
+        Obtain angle of servo
         '''
         self.read_joint()
-        # 等待server端启动
+
         self.client.wait_for_service()
-        # 创建消息包
+
         request = kinemaricsRequest()
         request.cur_joint1 = self.cur_joint[0]
         request.cur_joint2 = self.cur_joint[1]
@@ -69,7 +69,7 @@ class snake_ctrl:
         try:
             response = self.client.call(request)
             if isinstance(response, kinemaricsResponse):
-                # 获得反解响应结果
+
                 self.Posture[0] = response.x
                 self.Posture[1] = response.y
                 self.Posture[2] = response.z
@@ -80,7 +80,7 @@ class snake_ctrl:
             rospy.loginfo("get_Posture error")
 
     def joints_limit(self, joints):
-        # 创建消息包
+
         request = kinemaricsRequest()
         request.cur_joint1 = joints[0]
         request.cur_joint2 = joints[1]
@@ -107,7 +107,7 @@ class snake_ctrl:
 
     def snake_run(self, point_y):
         '''
-        发布位置请求,获取关节旋转角度
+        Obtain angle of servo
         '''
         request = kinemaricsRequest()
         request.tar_x = self.Posture[0]
@@ -117,7 +117,7 @@ class snake_ctrl:
         try:
             response = self.client.call(request)
             if isinstance(response, kinemaricsResponse):
-                # 获得反解响应结果
+
                 joints = [0.0, 0.0, 0.0, 0.0, 0.0]
                 joints[0] = response.joint1
                 joints[1] = response.joint2
@@ -134,28 +134,28 @@ class snake_ctrl:
         self.get_Posture()
         for key, area in msg.items():
             if key == name:
-                # 估计方块据摄像头的位置
+
                 distance = 27.05 * math.pow(area, -0.51) - 0.2
-                # 估计方块在世界坐标系下的位置
+
                 target_dist = distance + self.Posture[1]
                 if self.grap_status == 'Waiting':
                     threading.Thread(target=self.snake_run, args=(target_dist,)).start()
                     if self.Posture[1] <= 0.02:
-                        # 摇头
+                        # DOFBOT shakes head
                         self.sbus.Arm_serial_servo_write(5,180,300)
                         sleep(0.1)
                         self.sbus.Arm_serial_servo_write(5,0, 300)
                         sleep(0.1)
                         self.num = 1
                     elif self.Posture[1] >= 0.19:
-                        # 夹爪张合
+                        # Open and close clip
                         self.sbus.Arm_serial_servo_write(6, 30, 100)
                         sleep(0.08)
                         self.sbus.Arm_serial_servo_write(6, 180, 100)
                         sleep(0.08)
                         self.num += 1
                     else:
-                        # 夹爪张合
+                        # Open and close clip
                         self.sbus.Arm_serial_servo_write(6, 30, 100)
                         sleep(0.08)
                         self.sbus.Arm_serial_servo_write(6, 180, 100)
@@ -164,15 +164,15 @@ class snake_ctrl:
                     if self.num % 5 == 0: self.grap_status = 'Graping'
                 elif self.grap_status == 'Graping':
                     self.grap_status = 'Runing'
-                    # 执行放下
+
                     self.arm_move.snake_run(name)
-                    # 动作完毕
+
                     self.num = 1
-                    # 设置移动状态
+
                     self.grap_status = 'Waiting'
             else:
                 if self.grap_status == 'Waiting':
-                    # 摇头
+                    # DOFBOT shakes head
                     self.sbus.Arm_serial_servo_write(5,180,300)
                     sleep(0.1)
                     self.sbus.Arm_serial_servo_write(5,0, 300)

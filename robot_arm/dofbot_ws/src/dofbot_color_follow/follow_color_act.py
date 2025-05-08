@@ -8,7 +8,7 @@ Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查�
 '''
 import cv2
 import Arm_Lib
-from color_follow import color_follow  # 假设 color_follow 模块已实现追踪逻辑
+from .color_follow import color_follow  # 假设 color_follow 模块已实现追踪逻辑
 import random
 
 # 添加全局变量控制运行状态

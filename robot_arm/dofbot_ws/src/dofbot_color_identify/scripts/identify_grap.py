@@ -79,7 +79,29 @@ class identify_grap:
             self.move(joints, joints_down)
             # 移动完毕
             self.move_status = True
-    
+
+    def double_vlm_move(self,start_joints,end_joints):
+        '''
+        机械臂移动函数
+        :param start_joints: 抓取位置反解求得的各关节角度
+        :param end_joints: 放置物体位置反解求得的各关节角度
+        '''
+        if self.move_status == True:
+            # 此处设置,需执行完本次操作,才能向下运行
+            self.move_status = False
+            # print ("red")
+            # print (joints[0], joints[1], joints[2], joints[3], joints[4])
+            # 获得目标关节角
+            joints = [start_joints[0], start_joints[1], start_joints[2], start_joints[3], 265, 30]
+            # 移动到垃圾桶上方对应姿态
+#             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
+            # 移动到垃圾桶位置放下对应姿态
+            joints_down = [end_joints[0], end_joints[1], end_joints[2], end_joints[3], 265, self.grap_joint]
+            # 移动
+            self.move(joints, joints_down)
+            # 移动完毕
+            self.move_status = True
+        
     def identify_move(self, name, joints):
         '''
         机械臂移动函数

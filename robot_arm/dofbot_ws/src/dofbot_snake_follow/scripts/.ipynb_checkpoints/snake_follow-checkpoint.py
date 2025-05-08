@@ -2,9 +2,9 @@
 # coding: utf-8
 import cv2
 import random
-from dofbot_config import *
-from snake_target import snake_target
-from snake_ctrl import snake_ctrl
+from .dofbot_config import *
+from .snake_target import snake_target
+from .snake_ctrl import snake_ctrl
 import Arm_Lib
 import threading
 
@@ -102,7 +102,10 @@ class SnakeController:
         #             self.color = 'green' if self.color == 'red' else 'red'
         #     except KeyboardInterrupt:capture.release()
 
+def snake_follow_run(color='red'):
+    snake_follow = SnakeController(color=color)
+    snake_follow.run()
+
 if __name__ == "__main__":
     # 通过函数参数启动（示例：追踪红色）
-    controller = SnakeController(color='red')
-    controller.run()
+    snake_follow_run(color='red')

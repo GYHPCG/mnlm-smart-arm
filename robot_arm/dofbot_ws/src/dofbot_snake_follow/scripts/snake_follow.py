@@ -2,9 +2,9 @@
 # coding: utf-8
 import cv2
 import random
-from dofbot_config import *
-from snake_target import snake_target
-from snake_ctrl import snake_ctrl
+from .dofbot_config import *
+from .snake_target import snake_target
+from .snake_ctrl import snake_ctrl
 import Arm_Lib
 import threading
 

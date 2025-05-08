@@ -5,7 +5,7 @@ import rospy
 import threading
 import Arm_Lib
 from time import sleep
-from snake_move import snake_move
+from .snake_move import snake_move
 from dofbot_info.srv import kinemarics, kinemaricsRequest, kinemaricsResponse
 
 

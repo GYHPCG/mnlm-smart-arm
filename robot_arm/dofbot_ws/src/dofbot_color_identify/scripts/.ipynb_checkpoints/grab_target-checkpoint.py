@@ -192,6 +192,53 @@ class identify_GetTarget:
                 self.grap.vlm_move(joints)
             except Exception: print("sqaure_pos empty")
         if move_status==1:
+            # 回到抓取起始位置
+            # 架起
+            joints_uu = [90, 80, 50, 50, 265, 30]
+            # 移动至物体位置上方
+            self.arm.Arm_serial_servo_write6_array(joints_uu, 1000)
+            sleep(1)
+            # 初始位置
+            joints_0 = [self.xy[0], self.xy[1], 0, 0, 90, 30]
+            # 移动至初始位置
+            self.arm.Arm_serial_servo_write6_array(joints_0, 500)
+            sleep(0.5)
+
+    def double_vlm_target_run(self, msg, xy=None):
+        '''
+        抓取函数
+        :param msg: (颜色,位置)
+        '''
+        if xy != None: self.xy = xy
+        move_status=0
+        for i in msg.values():
+            if i !=None: move_status=1
+        if move_status==1:
+            self.arm.Arm_Buzzer_On(1)
+            sleep(0.5)
+
+        try:
+             # 此处ROS反解通讯,获取各关节旋转角度
+            name1,pos1 = list(msg.items())[0]
+            name2,pos2 = list(msg.items())[1]
+            
+            start_joints = self.server_joint(pos1)
+            end_joints = self.server_joint(pos2)
+
+            self.grap.double_vlm_move(start_joints,end_joints)
+            
+        except Exception: print("sqaure_pos empty")
+        # for name,pos in msg.items():
+        #     # print "pos : ",pos
+        #     # print "name : ",name
+        #     try:
+        #         # 此处ROS反解通讯,获取各关节旋转角度
+        #         joints = self.server_joint(pos)
+        #         # 调取移动函数
+        #         self.grap.vlm_move(joints)
+        #     except Exception: print("sqaure_pos empty")
+        if move_status==1:
+            # 回到抓取起始位置
             # 架起
             joints_uu = [90, 80, 50, 50, 265, 30]
             # 移动至物体位置上方
@@ -236,8 +283,57 @@ class identify_GetTarget:
         except Exception:
             rospy.loginfo("arg error")
 
+
+def grasp_object(result):
+      ## 第五步：视觉大模型输出结果后处理和可视化
+    print('第五步：视觉大模型输出结果后处理和可视化')
+    START_X_CENTER, START_Y_CENTER= post_processing_viz_one(result, img_path, check=True)
+    START_X_MIN = int(result['start_xyxy'][0][0])
+    START_Y_MIN = int(result['start_xyxy'][0][1])
+    # 起点，右下角像素坐标
+    START_X_MAX = int(result['start_xyxy'][1][0])
+    START_Y_MAX = int(result['start_xyxy'][1][1])
+    target      = identify_GetTarget()
+    target_xy = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
+     # 输出结果
+    print("Detected Targets:", targets)
+    # ta =  {'red': (234, 233), 'green': (455, 222)}
+    ta =  {'start':target_xy}
+     # 假设我们有一个目标位置进行抓取测试
+    if target_xy:
+        target.vlm_target_run(ta)
+        
+def transfer_object_to_target(result):
+    START_X_CENTER, START_Y_CENTER, END_X_CENTER, END_Y_CENTER = post_processing_viz_two(result, img_path, check=True)
+     #可视化结束
+    print("可视化结束")
+    # 起点，左上角像素坐标
+    START_X_MIN = int(result['start_xyxy'][0][0])
+    START_Y_MIN = int(result['start_xyxy'][0][1])
+    # 起点，右下角像素坐标
+    START_X_MAX = int(result['start_xyxy'][1][0])
+    START_Y_MAX = int(result['start_xyxy'][1][1])
+
+    # 终点，左上角像素坐标
+    END_X_MIN = int(result['end_xyxy'][0][0])
+    END_Y_MIN = int(result['end_xyxy'][0][1])
+    # 终点，右下角像素坐标
+    END_X_MAX = int(result['end_xyxy'][1][0])
+    END_Y_MAX = int(result['end_xyxy'][1][1])
+    
+    target      = identify_GetTarget()
+    start_targets = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
+    end_targets = target.get_arm_coordinates(END_X_MIN,END_Y_MIN,END_X_MAX,END_Y_MAX)
+
+    # starts = {"start": start_targets}
+    # ends = {"end": end_targets}
+    msg = {
+        "start": start_targets,
+        "end": end_targets,
+    }
+    target.double_vlm_target_run(msg)
+
 import numpy as np
-# from identify_GetTarget import identify_GetTarget  # 假设你的代码保存在'identify_GetTarget.py'文件中
 
 def simulate_image():
     """创建一个模拟图像用于测试"""
@@ -248,26 +344,6 @@ def simulate_image():
 
 if __name__ == '__main__':
     target      = identify_GetTarget()
-    # color_hsv  = {"red"   : ((0, 43, 46), (10, 255, 255)),
-    #           "green" : ((35, 43, 46), (77, 255, 255)),
-    #           "blue"  : ((100, 43, 46), (124, 255, 255)),
-    #           "yellow": ((26, 43, 46), (34, 255, 255))}
-    # # color_list = {'1': "red", '2': "green", '3': "blue", '4': "yellow"}
-    # color_list = {'1': "red"}
-    # # 获取模拟图像
-    # image = simulate_image()
-
-    # # 执行颜色识别和目标位置获取
-    # processed_image, targets = target.select_color(image, color_hsv, color_list)
-
-    # # 输出结果
-    # print("Detected Targets:", targets)
-    # # ta =  {'red': (234, 233), 'green': (455, 222)}
-    # # 假设我们有一个目标位置进行抓取测试
-    # if targets:
-    #     target_name, target_pos = list(targets.items())[0]  # 只取第一个找到的目标作为例子
-    #     target.target_run({target_name: target_pos})
-        # target.target_run(ta)
     targets = target.get_arm_coordinates(154,278,224,348)
      # 输出结果
     print("Detected Targets:", targets)
@@ -275,6 +351,4 @@ if __name__ == '__main__':
     ta =  {'start':targets}
     # 假设我们有一个目标位置进行抓取测试
     if targets:
-        # target_name, target_pos = list(targets.items())[0]  # 只取第一个找到的目标作为例子
-        # target.target_run({target_name: target_pos})
         target.vlm_target_run(ta)
