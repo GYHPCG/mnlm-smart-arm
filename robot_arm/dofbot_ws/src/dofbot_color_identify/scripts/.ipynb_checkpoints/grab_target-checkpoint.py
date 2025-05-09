@@ -7,7 +7,7 @@ import numpy as np
 from time import sleep
 from identify_grap import identify_grap
 from dofbot_info.srv import kinemarics, kinemaricsRequest, kinemaricsResponse
-from .post_processing_viz import post_processing_viz_one,post_processing_viz_two
+from post_processing_viz import post_processing_viz_one,post_processing_viz_two
 
 class identify_GetTarget:
     def __init__(self):
@@ -284,7 +284,7 @@ class identify_GetTarget:
             rospy.loginfo("arg error")
 
 
-def grasp_object(result):
+def grasp_object(result,img_path):
       ## 第五步：视觉大模型输出结果后处理和可视化
     print('第五步：视觉大模型输出结果后处理和可视化')
     START_X_CENTER, START_Y_CENTER= post_processing_viz_one(result, img_path, check=True)
@@ -296,14 +296,14 @@ def grasp_object(result):
     target      = identify_GetTarget()
     target_xy = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
      # 输出结果
-    print("Detected Targets:", targets)
+    print("Detected Targets:", target_xy)
     # ta =  {'red': (234, 233), 'green': (455, 222)}
     ta =  {'start':target_xy}
      # 假设我们有一个目标位置进行抓取测试
     if target_xy:
         target.vlm_target_run(ta)
         
-def transfer_object_to_target(result):
+def transfer_object_to_target(result,img_path):
     print('第五步：视觉大模型输出结果后处理和可视化')
     START_X_CENTER, START_Y_CENTER, END_X_CENTER, END_Y_CENTER = post_processing_viz_two(result, img_path, check=True)
      #可视化结束

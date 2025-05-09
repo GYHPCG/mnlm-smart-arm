@@ -64,7 +64,7 @@ def post_processing_viz_one(result, img_path, check=False):
     # draw.text((END_X_MIN, END_Y_MIN-32), END_NAME, font=font, fill=(0, 0, 255, 1)) # 文字坐标，中文字符串，字体，rgba颜色
     img_bgr = cv2.cvtColor(np.array(img_pil), cv2.COLOR_RGB2BGR) # RGB转BGR
     # 保存可视化效果图
-    cv2.imwrite('../image/vl_now_viz.jpg', img_bgr)
+    cv2.imwrite('/home/dofbot/code/mnlm-smart-arm/image/vl_now_viz.jpg', img_bgr)
 
     # formatted_time = time.strftime("%Y%m%d%H%M", time.localtime())
     # cv2.imwrite('visualizations/{}.jpg'.format(formatted_time), img_bgr)
@@ -146,7 +146,7 @@ def post_processing_viz_two(result, img_path, check=False):
     draw.text((END_X_MIN, END_Y_MIN-32), END_NAME, font=font, fill=(0, 0, 255, 1)) # 文字坐标，中文字符串，字体，rgba颜色
     img_bgr = cv2.cvtColor(np.array(img_pil), cv2.COLOR_RGB2BGR) # RGB转BGR
     # 保存可视化效果图
-    cv2.imwrite('../image/vl_now_viz.jpg', img_bgr)
+    cv2.imwrite('/home/dofbot/code/mnlm-smart-arm/image/vl_now_viz.jpg', img_bgr)
 
     # formatted_time = time.strftime("%Y%m%d%H%M", time.localtime())
     # cv2.imwrite('visualizations/{}.jpg'.format(formatted_time), img_bgr)

@@ -109,7 +109,7 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     # msg = {
     #     "start": start_targets,
     #     "end": end_targets,
-    }
+    # }
     # target.double_vlm_target_run(msg)
     # if start_targets:
     #     # target_name, target_pos = list(targets.items())[0]  # 只取第一个找到的目标作为例子
@@ -122,9 +122,11 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     #     target.vlm_target_run(ends)
 
     # 根据返回结果，分别调用函数
+    
     if "end" in result:
-        transfer_object_to_target(result)
-    else grasp_object(result)
+        transfer_object_to_target(result,img_path)
+    else:
+        grasp_object(result,img_path)
     
     print('第八步：任务完成')
     cv2.destroyAllWindows()   # 关闭所有opencv窗口
