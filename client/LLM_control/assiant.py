@@ -2,13 +2,14 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-08 16:47:52
+LastEditTime: 2025-05-09 17:29:53
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
 
 from openai import OpenAI
 import json
+from rag_indexer import RAGIndexer
 from command_send import send_commands_to_service
 import os
 
@@ -71,7 +72,7 @@ def generate_prompt(command_str)->str:
     
     return SYSTEM_PROMOPT
       
-def get_assiant_result(command_str):
+def generate_operations_sequence(command_str):
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
@@ -110,11 +111,22 @@ def get_assiant_result(command_str):
     #         eval(each)
     return response_content
 
-def get_respone(command_str):
-      response = get_assiant_result(command_str)
-      response = json.loads(response)
+def get_response(command_str,use_rag):
+      # 如果启动rag，则调用rag的接口
+      global response
+      if use_rag:
+         indexer = RAGIndexer()
+         retrieved_context = indexer.retrieve_operation_sequences(command_str)
+         prompt = f"参考以下操作知识：{retrieved_context}\n用户指令：{command_str}\n请生成操作序列。"
+         response = generate_operations_sequence(prompt=prompt)
+         response = json.loads(response)
+      
+      else :
+        print("未启动rag，使用默认的指令生成器")
+        response = generate_operations_sequence(command_str)
+        response = json.loads(response)
       
       return response['response']
 
 if __name__ == '__main__':
-    get_assiant_result("旋转180度")
+    generate_operations_sequence("旋转180度")

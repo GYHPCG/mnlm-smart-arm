@@ -1,0 +1,28 @@
+{
+    "跳舞函数": {
+        "function": "arm_dance",
+        "parameters": []
+    },
+    "控制rgbled灯光颜色函数": {
+        "function": "arm_control",
+        "parameters": ["r","g","b"]
+    },
+    "控制机械臂归中函数": {
+        "function": "arm_zero",
+        "parameters": []
+
+    },
+    "控制机械臂第i个舵机函数":{
+        "function": "arm_control_servo",
+        "parameters": ["id","angle","op_time"]
+    },
+    "控制所有舵机函数":{
+        "function": "arm_control_all_servos",
+        "parameters": ["angles","op_time"]
+    },
+    "控制机械臂旋转函数":{
+        "function": "arm_rotate",
+        "parameters": ["x","y","z","op_time"]
+    }
+
+}

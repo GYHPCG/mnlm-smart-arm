@@ -158,16 +158,12 @@ def start_conversation(
             print(f"User: {user_input}")
             if user_input == "":
                 continue
-            # send_commands_to_service(user_input, "http://192.168.43.144:5688/robot_command")
-            # get_assiant_result(user_input)
-            result_response = get_respone(user_input)
+            result_response = get_response(user_input)
 
         else:
             print("User: ", end="")
             user_input = input()
-            # send_commands_to_service(user_input, "http://192.168.43.144:5688/robot_command")
-            # get_assiant_result(user_input)
-            result_response = get_respone(user_input)
+            result_response = get_response(user_input)
 
         if user_input.lower() == "exit":
             break
