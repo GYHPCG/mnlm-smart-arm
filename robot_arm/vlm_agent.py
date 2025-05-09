@@ -83,34 +83,34 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     
     ## 第五步：视觉大模型输出结果后处理和可视化
     print('第五步：视觉大模型输出结果后处理和可视化')
-    START_X_CENTER, START_Y_CENTER, END_X_CENTER, END_Y_CENTER = post_processing_viz(result, img_path, check=True)
-    #可视化结束
-    print("可视化结束")
-    # 起点，左上角像素坐标
-    START_X_MIN = int(result['start_xyxy'][0][0])
-    START_Y_MIN = int(result['start_xyxy'][0][1])
-    # 起点，右下角像素坐标
-    START_X_MAX = int(result['start_xyxy'][1][0])
-    START_Y_MAX = int(result['start_xyxy'][1][1])
+    # START_X_CENTER, START_Y_CENTER, END_X_CENTER, END_Y_CENTER = post_processing_viz(result, img_path, check=True)
+    # #可视化结束
+    # print("可视化结束")
+    # # 起点，左上角像素坐标
+    # START_X_MIN = int(result['start_xyxy'][0][0])
+    # START_Y_MIN = int(result['start_xyxy'][0][1])
+    # # 起点，右下角像素坐标
+    # START_X_MAX = int(result['start_xyxy'][1][0])
+    # START_Y_MAX = int(result['start_xyxy'][1][1])
 
-    # 终点，左上角像素坐标
-    END_X_MIN = int(result['end_xyxy'][0][0])
-    END_Y_MIN = int(result['end_xyxy'][0][1])
-    # 终点，右下角像素坐标
-    END_X_MAX = int(result['end_xyxy'][1][0])
-    END_Y_MAX = int(result['end_xyxy'][1][1])
+    # # 终点，左上角像素坐标
+    # END_X_MIN = int(result['end_xyxy'][0][0])
+    # END_Y_MIN = int(result['end_xyxy'][0][1])
+    # # 终点，右下角像素坐标
+    # END_X_MAX = int(result['end_xyxy'][1][0])
+    # END_Y_MAX = int(result['end_xyxy'][1][1])
     
-    target      = identify_GetTarget()
-    start_targets = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
-    end_targets = target.get_arm_coordinates(END_X_MIN,END_Y_MIN,END_X_MAX,END_Y_MAX)
+    # target      = identify_GetTarget()
+    # start_targets = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
+    # end_targets = target.get_arm_coordinates(END_X_MIN,END_Y_MIN,END_X_MAX,END_Y_MAX)
 
-    # starts = {"start": start_targets}
-    # ends = {"end": end_targets}
-    msg = {
-        "start": start_targets,
-        "end": end_targets,
+    # # starts = {"start": start_targets}
+    # # ends = {"end": end_targets}
+    # msg = {
+    #     "start": start_targets,
+    #     "end": end_targets,
     }
-    target.double_vlm_target_run(msg)
+    # target.double_vlm_target_run(msg)
     # if start_targets:
     #     # target_name, target_pos = list(targets.items())[0]  # 只取第一个找到的目标作为例子
     #     # target.target_run({target_name: target_pos})
@@ -120,7 +120,12 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     #     # target_name, target_pos = list(targets.items())[0]  # 只取第一个找到的目标作为例子
     #     # target.target_run({target_name: target_pos})
     #     target.vlm_target_run(ends)
-         
+
+    # 根据返回结果，分别调用函数
+    if "end" in result:
+        transfer_object_to_target(result)
+    else grasp_object(result)
+    
     print('第八步：任务完成')
     cv2.destroyAllWindows()   # 关闭所有opencv窗口
     # exit()

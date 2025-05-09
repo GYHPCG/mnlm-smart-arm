@@ -7,7 +7,7 @@ import numpy as np
 from time import sleep
 from identify_grap import identify_grap
 from dofbot_info.srv import kinemarics, kinemaricsRequest, kinemaricsResponse
-
+from .post_processing_viz import post_processing_viz_one,post_processing_viz_two
 
 class identify_GetTarget:
     def __init__(self):
@@ -304,6 +304,7 @@ def grasp_object(result):
         target.vlm_target_run(ta)
         
 def transfer_object_to_target(result):
+    print('第五步：视觉大模型输出结果后处理和可视化')
     START_X_CENTER, START_Y_CENTER, END_X_CENTER, END_Y_CENTER = post_processing_viz_two(result, img_path, check=True)
      #可视化结束
     print("可视化结束")

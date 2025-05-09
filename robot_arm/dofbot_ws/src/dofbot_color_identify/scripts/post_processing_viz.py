@@ -1,95 +1,10 @@
-print('导入视觉大模型模块')
 import time
 import cv2
 import numpy as np
 from PIL import Image
 from PIL import ImageFont, ImageDraw
 # 导入中文字体，指定字号
-font = ImageFont.truetype('asset/SimHei.ttf', 26)
-
-
-# 系统提示词
-SYSTEM_PROMPT = '''
-你是一个智能机器人，拥有一个大脑和一个机械臂，人们可以向你发出命令，询问问题。
-比如：
-1. 人们问你面前有什么，你需要识别出图片里的东西。并返回识别结果放在json中，不要回复其它内容,如```json开头和结尾。
-如，图片中有什么东西？你的输出格式是：response给出你的反应(灵活一些)，然后thing_name里列出看到的物品
-{
-    "response":"好的，再在图片中我看到了一些东西"
-    "thing_name": ["红色方块", "绿色方块", "房子简笔画"]
-}
----
-2. 人们让你抓起某个物体。你需要提取出该物体的位置，坐标从左上角(0,0)开始，右下角结束，向右为x轴，向下为y轴，并从这张图中分别找到这个物体左上角和右下角的像素坐标，输出json数据结构。例如，如果我的指令是：帮我抓起红色方块。你输出这个的格式：
-{
- "response": "好的，我尝试帮你拿起红色方块",
- "start":"红色方块",
- "start_xyxy":[[102,505],[324,860]],
-}
-
-只回复json本身即可，不要回复其它内容,如```json的开头或结尾。
----
-3. 人们让你把红色方块放在蓝色方块上。你需要从这句话中提取出起始物体和终止物体，坐标从左上角(0,0)开始，右下角结束，向右为x轴，向下为y轴，并从这张图中分别找到这两个物体左上角和右下角的像素坐标，输出json数据结构。
-例如，如果我的指令是：请帮我把红色方块放在蓝色方块上。
-你输出这样的格式：
-{
- "thing_name": ["红色方块", "绿色方块", "房子简笔画"],
- "start":"红色方块",
- "start_xyxy":[[102,505],[324,860]],
- "end":"蓝色方块",
- "end_xyxy":[[300,150],[476,310]]
-}
-
-只回复json本身即可，不要回复其它内容,如```json的开头或结尾。
-
-我现在的指令是：
-'''
-
-# gpt4o调用函数
-import openai
-from openai import OpenAI
-import base64
-import json
-# Function to encode the image
-def encode_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
-def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../../image/top_viw_now.jpg'):
-    '''
-    gpt4o大模型API
-    '''
-    
-    client = OpenAI(
-        # openai系列的sdk，包括langchain，都需要这个/v1的后缀
-        base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
-    )
-    # 编码为base64数据
-    base64_image = encode_image(img_path)
-    
-    chat_completion = client.chat.completions.create(
-        model="gpt-4o-2024-11-20",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    { "type": "text", "text": f"{SYSTEM_PROMPT + PROMPT}" },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/jpeg;base64,{base64_image}",
-                        },
-                    },
-                ],
-            }
-        ],
-    ) 
-     
-    # print(chat_completion)
-    response_content = chat_completion.choices[0].message.content.strip()
-    print("vlm 多模态模型调用成功")
-    print(response_content)
-
-    return response_content
+font = ImageFont.truetype('/home/dofbot/code/mnlm-smart-arm/robot_arm/asset/SimHei.ttf', 26)
 
 def post_processing_viz_one(result, img_path, check=False):
     
@@ -110,7 +25,7 @@ def post_processing_viz_one(result, img_path, check=False):
     # 起点物体名称
     START_NAME = result['start']
     # 终点物体名称
-    END_NAME = result['end']
+    # END_NAME = result['end']
     # 起点，左上角像素坐标
     START_X_MIN = int(result['start_xyxy'][0][0])
     START_Y_MIN = int(result['start_xyxy'][0][1])
@@ -173,7 +88,7 @@ def post_processing_viz_one(result, img_path, check=False):
     time.sleep(5)
     return START_X_CENTER, START_Y_CENTER
 
-def post_processing_viz(result, img_path, check=False):
+def post_processing_viz_two(result, img_path, check=False):
     
     '''
     视觉大模型输出结果后处理和可视化
@@ -254,11 +169,3 @@ def post_processing_viz(result, img_path, check=False):
     #         pass
     time.sleep(5)
     return START_X_CENTER, START_Y_CENTER, END_X_CENTER, END_Y_CENTER
-
-if __name__ == '__main__':
-    # 测试
-    result = gpt4o_API(PROMPT='把绿色方块放到蓝色方块上面', img_path='../image/top_view_now11.jpg')
-    print(result)
-    result = json.loads(result)
-    print(result)
-    post_processing_viz(result, img_path='../image/top_view_now11.jpg', check=True)
