@@ -10,66 +10,61 @@ from openai import OpenAI
 from utils import Logger
 
 
-class RAGIndexer:
+class InstructionIndexer:
 
     def __init__(self):
         """
-        Initialize the RAGIndexer class.
+        Initialize the InstructionIndexer class.
+
+        Args:
+            json_file_path (str): Path to the JSON file containing instructions.
         """
         load_dotenv(override=True)
         self.logger = Logger(__file__)
         self.client = OpenAI()
-        self.function_sequences = []
+        self.operation_sequences = []
         self.index = None
 
     def create_index(
         self, command_bank_file_path: str, index_destination: str, data_destination: str
     ) -> None:
         """
-        Create the FAISS index for function descriptions.
+        Create the FAISS index for instructions.
         """
-        # 加载函数定义数据
-        functions_data = self._load_json_file(command_bank_file_path)
-        descriptions = []
-        function_sequences = []
-        
-        # 处理每个函数定义
-        for function_data in functions_data:
-            # 组合description和instruction作为检索文本
-            combined_text = f"{function_data['description']} {function_data['example']['instruction']}"
-            descriptions.append(combined_text)
-            # 保存完整的函数信息
-            function_sequences.append({
-                "description": function_data["description"],
-                "function_name": function_data["function_name"],
-                "parameters": function_data["parameters"],
-                "example": function_data["example"]
-            })
+        instructions_data = self._load_json_file(command_bank_file_path)
+        instructions = []
+        operation_sequences = []
+        for instruction, operations in instructions_data.items():
+            instructions.append(instruction)
+            operations_blob = {
+                "instruction": instruction,
+                "operations": operations["operations"],
+            }
+            operation_sequences.append(operations_blob)
 
-        # 生成嵌入向量
-        embeddings = self._embed_instructions(descriptions)
+        embeddings = self._embed_instructions(instructions)
 
-        # 创建FAISS索引
+        # Creating the FAISS index
         dimension = embeddings.shape[1]
         self.index = faiss.IndexFlatL2(dimension)
         self.index.add(embeddings)
 
-        # 保存索引和函数序列
+        # Save the FAISS index and operation sequences
         self._save_index_and_data(
-            function_sequences=function_sequences,
+            operation_sequences=operation_sequences,
             index_destination=index_destination,
             data_destination=data_destination,
         )
 
-    def _load_json_file(self, command_bank_file_path: str) -> List[Dict[str, Any]]:
+    def _load_json_file(self, command_bank_file_path: str) -> Dict[str, Any]:
         """
-        Load the JSON file containing function definitions.
+        Load the JSON file containing instructions.
 
         Returns:
-            list: List of function definitions.
+            dict: Dictionary containing instructions.
         """
         self.logger.info(f"Loading JSON file: {command_bank_file_path}")
-        with open(command_bank_file_path, "r", encoding='utf-8') as file:
+        with open(command_bank_file_path, "r") as file:
             return json.load(file)
 
     def _embed_instructions(self, instructions: List[str]) -> np.ndarray:
@@ -96,118 +91,106 @@ class RAGIndexer:
 
     def _save_index_and_data(
         self,
-        function_sequences: List[Dict[str, Any]],
+        operation_sequences: List[Dict[str, Any]],
         index_destination: str,
         data_destination: str,
     ) -> None:
         """
-        Save the FAISS index and function sequences to files.
+        Save the FAISS index and operation sequences to files.
 
         Args:
-            function_sequences (list): List of function sequences.
             index_destination (str): Path to save the FAISS index.
-            data_destination (str): Path to save the function sequences.
+            data_destination (str): Path to save the operation sequences.
         """
         # Ensure the index and data are created
         if self.index is None:
             raise ValueError("Index has not been created. Call create_index() first.")
 
-        # 打印索引信息
-        print(f"索引类型: {type(self.index)}")
-        print(f"索引维度: {self.index.d}")
-        print(f"索引中的向量数量: {self.index.ntotal}")
-        print(f"索引是否训练: {self.index.is_trained}")
-
-        # 统一使用正斜杠作为路径分隔符
-        index_destination = index_destination.replace('\\', '/')
-        data_destination = data_destination.replace('\\', '/')
-
         # Save the FAISS index
         if os.path.exists(index_destination):
             os.remove(index_destination)
         os.makedirs(os.path.dirname(index_destination), exist_ok=True)
-        print(f"FAISS路径: {index_destination}")
         faiss.write_index(self.index, index_destination)
 
-        # Save the function sequences
+        # Save the operation sequences
         if os.path.exists(data_destination):
             os.remove(data_destination)
         os.makedirs(os.path.dirname(data_destination), exist_ok=True)
-        with open(data_destination, "w", encoding='utf-8') as file:
-            json.dump(function_sequences, file, indent=2, ensure_ascii=False)
+        with open(data_destination, "w") as file:
+            json.dump(operation_sequences, file, indent=2)
 
     def load_index_and_data(
         self, index_path: str = None, data_path: str = None
     ) -> None:
         """
-        Load the FAISS index and function sequences from files.
+        Load the FAISS index and operation sequences from files.
 
         Args:
             index_path (str): Path to the FAISS index file.
-            data_path (str): Path to the function sequences file.
+            data_path (str): Path to the operation sequences file.
         """
         if not index_path:
             index_path = os.path.join(
                 os.path.dirname(os.path.dirname(__file__)),
-                "rag/index/instructions.index",
+                "knowledge/index/instructions.index",
             )
         if not data_path:
             data_path = os.path.join(
                 os.path.dirname(os.path.dirname(__file__)),
-                "rag/index/instructions_data.json",
+                "knowledge/index/instructions_data.json",
             )
         self.index = faiss.read_index(index_path)
-        with open(data_path, "r", encoding='utf-8') as file:
-            self.function_sequences = json.load(file)
+        with open(data_path, "r") as file:
+            self.operation_sequences = json.load(file)
 
-    def retrieve_function_sequence(self, description: str, k: int = 1) -> str:
+    def retrieve_operation_sequences(self, instruction: str, k: int = 1) -> str:
         """
-        Retrieve the function sequence for a given query.
+        Retrieve the operation sequences for a given query.
 
         Args:
-            description (str): Query to search for.
-            k (int): Number of function sequences to retrieve.
+            instruction (str): Query to search for.
+            k (int): Number of operation sequences to retrieve.
 
         Returns:
-            str: JSON string containing the function sequence.
+            list: List of operation sequences.
         """
         # Embed the query
-        query_embedding = self._embed_instructions([description])
+        query_embedding = self._embed_instructions([instruction])
 
         # Search the index
         _, indices = self.index.search(query_embedding, k)
-        retrieved_functions = [self.function_sequences[i] for i in indices[0]]
-        json_blob = json.dumps(retrieved_functions[0], ensure_ascii=False)
+        retrieved_operations = [self.operation_sequences[i] for i in indices[0]]
+        json_blob = json.dumps(retrieved_operations[0])
         return json_blob
 
 
 def parse_args():
     # Setup argument parser
-    parser = argparse.ArgumentParser(description="Function Indexer")
+    parser = argparse.ArgumentParser(description="Instruction Indexer")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     index_destination = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "rag/index/instructions.index"
+        os.path.dirname(os.path.dirname(__file__)), "knowledge/index/instructions.index"
     )
 
     data_destination = os.path.join(
         os.path.dirname(os.path.dirname(__file__)),
-        "rag/index/instructions_data.json",
+        "knowledge/index/instructions_data.json",
     )
 
     # Subparser for creating index
     create_index_parser = subparsers.add_parser(
-        "index", help="Create a new FAISS index from function definitions"
+        "index", help="Create a new FAISS index from JSON data"
     )
 
     default_command_file_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "rag/operations_data.json"
+        os.path.dirname(os.path.dirname(__file__)), "knowledge/command_bank.json"
     )
     create_index_parser.add_argument(
         "--command-bank-file-path",
         type=str,
         default=default_command_file_path,
-        help="Path to the JSON file containing function definitions",
+        help="Path to the JSON file containing instructions",
     )
 
     create_index_parser.add_argument(
@@ -223,7 +206,7 @@ def parse_args():
         type=str,
         default=data_destination,
         required=False,
-        help="Path to save the function sequences",
+        help="Path to save the operation sequences",
     )
 
     # Subparser for querying index
@@ -245,48 +228,24 @@ def parse_args():
         type=str,
         default=data_destination,
         required=False,
-        help="Path to the JSON file containing function sequences",
+        help="Path to the JSON file containing operation sequences",
     )
     query_index_parser.add_argument(
         "--k",
         type=int,
         default=1,
         required=False,
-        help="Number of function sequences to retrieve",
+        help="Number of operation sequences to retrieve",
     )
 
     # Parse arguments
     return parser.parse_args()
 
-def get_rag_result(command_str):
-    """
-    Get RAG result for a given command string.
-    
-    Args:
-        command_str (str): The command string to search for
-        
-    Returns:
-        str: JSON string containing the retrieved function sequence
-    """
-    indexer = RAGIndexer()
-    # Use default paths
-    index_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "rag/index/instructions.index"
-    )
-    data_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)),
-        "rag/index/instructions_data.json",
-    )
-    indexer.load_index_and_data(
-        index_path=index_path,
-        data_path=data_path
-    )
-    return indexer.retrieve_function_sequence(command_str)
 
 if __name__ == "__main__":
     args = parse_args()
     if args.command == "index":
-        indexer = RAGIndexer()
+        indexer = InstructionIndexer()
         indexer.create_index(
             command_bank_file_path=args.command_bank_file_path,
             index_destination=args.index_destination,
@@ -294,9 +253,9 @@ if __name__ == "__main__":
         )
         print("Index and data saved.")
     else:
-        indexer = RAGIndexer()
+        indexer = InstructionIndexer()
         indexer.load_index_and_data(
             index_path=args.index_path, data_path=args.data_path
         )
-        function_sequence = indexer.retrieve_function_sequence(args.query, args.k)
-        print(f"Function sequence: {function_sequence}")
+        operation_sequences = indexer.retrieve_operation_sequences(args.query, args.k)
+        print(f"Operation sequences: {operation_sequences}")

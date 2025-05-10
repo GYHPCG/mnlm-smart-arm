@@ -1,0 +1,181 @@
+[
+  {
+    "description": "让机械臂跳舞",
+    "function_name": "arm_dance",
+    "parameters": {},
+    "example": {
+      "instruction": "让机械臂跳舞",
+      "arm_action": "arm_dance()"
+    }
+  },
+  {
+    "description": "控制机械臂rgb灯光变色函数",
+    "function_name": "rgb_control",
+    "parameters": {
+      "r": {
+        "type": "int",
+        "description": "红色值"
+      },
+      "g": {
+        "type": "int",
+        "description": "绿色值"
+      },
+      "b": {
+        "type": "int",
+        "description": "蓝色值"
+      }
+    },
+    "example": {
+      "instruction": "让机械臂灯光变红色",
+      "arm_action": "rgb_control(255，0，0)"
+    }
+  },
+  {
+    "description": "让机械臂归置到初始位置",
+    "function_name": "arm_zero",
+    "parameters": {},
+    "example": {
+      "instruction": "让机械归中",
+      "arm_action": "arm_zero()"
+    }
+  },
+  {
+    "description": "控制机械臂的第i个舵机运动",
+    "function_name": "move_single_servo",
+    "parameters": {
+      "id": {
+        "type": "int",
+        "description": "机械臂的第i个舵机",
+        "min": 0,
+        "max": 5
+      },
+      "angle": {
+        "type": "int",
+        "description": "舵机变化角度"
+      },
+      "op_time": {
+        "type": "int",
+        "description": "机械臂舵机运动时间时长",
+        "defualt": 1000
+      }
+    },
+    "example": {
+      "instruction": "让机械臂第1个舵机运动到90度",
+      "arm_action": "move_single_servo(0，90，1000)"
+    }
+  },
+  {
+    "description": "一次性控制机械臂的6个舵机运动",
+    "function_name": "move_all_servo",
+    "parameters": {
+      "angle": {
+        "type": "array",
+        "description": "机械臂的第i个舵机",
+        "items": {
+          "type": "int",
+          "description": "舵机角度值"
+        },
+        "minItems": 6,
+        "maxItems": 6
+      },
+      "op_time": {
+        "type": "int",
+        "description": "机械臂舵机运动时间时长",
+        "defualt": 1000
+      }
+    },
+    "example": {
+      "instruction": "让机械臂所有舵机运动到指定角度",
+      "arm_action": "move_all_servo([0, 45, 60, 60, 0, 0], 1000)"
+    }
+  },
+  {
+    "description": "可用控制机械臂抓起物体，控制机械臂的夹爪",
+    "function_name": "arm_clamp_block",
+    "parameters": {
+      "enable": {
+        "type": "int",
+        "description": "enable=1时，夹爪关闭，enable=0时，夹爪打开"
+      }
+    },
+    "example": {
+      "instruction": "让机械臂握紧拳头",
+      "arm_action": "arm_clamp_block(1)"
+    }
+  },
+  {
+    "description": "注意，这个功能跟抓取无关，它只是一个小功能，让机械臂镜头跟随选择的颜色",
+    "function_name": "follow_color_run",
+    "parameters": {
+      "color": {
+        "type": "str",
+        "description": "按照颜色如red,blue,green,yellow等来追踪颜色"
+      }
+    },
+    "example": {
+      "instruction": "让我们一起玩游戏吧，你跟随我的红色方块运动吧",
+      "arm_action": "follow_color_run(color='red')"
+    }
+  },
+  {
+    "description": "注意，这个功能跟抓取无关，它只是一个小功能，能让机械臂镜头来玩引蛇出洞的游戏",
+    "function_name": "snake_follow_run",
+    "parameters": {
+      "color": {
+        "type": "str",
+        "description": "按照颜色如red,blue,green,yellow等选择颜色来进行引蛇出洞游戏"
+      }
+    },
+    "example": {
+      "instruction": "让我们一起玩引蛇出洞的游戏吧，跟随红色物体来玩吧",
+      "arm_action": "follow_color_run(color='red')"
+    }
+  },
+  {
+    "description": "能让机械臂识别出来当前摄像头所看到的物体",
+    "function_name": "vision_identify",
+    "parameters": {
+      "PROMPT": {
+        "type": "str",
+        "description": "输入查看的物体的相关指令"
+      }
+    },
+    "example": {
+      "instruction": "你当前看到了什么东西呢",
+      "arm_action": "vision_identify(PROMPT='图像中有什么东西')"
+    }
+  },
+  {
+    "description": "能让机械臂识别出来当前摄像头所看到的物体",
+    "function_name": "vision_identify",
+    "parameters": {
+      "PROMPT": {
+        "type": "str",
+        "description": "输入查看的物体的相关指令"
+      }
+    },
+    "example": {
+      "instruction": "你当前看到了什么东西呢",
+      "arm_action": "vision_identify(PROMPT='图像中有什么东西')"
+    }
+  },
+  {
+    "description": "控制机械臂抓起当前指定物体，然后移动到其他位置",
+    "function_name": "vlm_move",
+    "parameters": {
+      "PROMPT": {
+        "type": "str",
+        "description": "输入需要机械臂操作的相关自然语言指令"
+      },
+      "input_way": {
+        "type": "str",
+        "description": "nput_way是输入方式，如keyboard或voice",
+        "defualt": "keyboard"
+      }
+    },
+    "example": {
+      "instruction": "帮我把绿色方块放在红色方块上",
+      "arm_action": "vision_identify(PROMPT='图像中有什么东西')"
+    }
+  }
+]

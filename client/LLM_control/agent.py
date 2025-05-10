@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-10 15:34:48
+LastEditTime: 2025-05-10 16:03:38
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -24,15 +24,6 @@ def generate_prompt(command_str)->str:
 
     SYSTEM_PROMOPT=f"""
     你有一个大脑和一个机械臂，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来)。
-    【以下是所有内置函数介绍】
-    定义机械臂跳舞函数，arm_dance()，让机械臂跳舞
-    定义机械臂rgb灯光函数，rgb_control(r,g,b)，控制机械臂灯光颜色
-    定义机械臂归中函数，arm_zero()，让机械臂回到原点
-    定义控制第i个舵机函数，move_single_servo(id, angle, op_time)，控制第i个舵机运动，id是舵机编号，angle是舵机角度，op_time是舵机转动时间
-    定义控制所有舵机函数，move_all_servo(angle, op_time)，控制所有舵机运动，angle[6]是对应的每个舵机角度，op_time是舵机转动时间
-    定义机械臂摄像头颜色追踪函数，follow_color_run(color='red') ,按照颜色如red,blue,green,yellow来追踪颜色
-    定义机械臂视觉抓取函数，vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='keyboard'),PROMPT是动作描述，input_way是输入方式，如keyboard或voice。
-    定义获取机械臂当前摄像头视觉内容的函数，vision_identify(PROMPT="图像中有什么东西"),该函数会获取当前摄像头中的所有内容  
     【输出json格式】
     你直接输出json本身内容即可,不需要```json的开头或结尾
     在"function"键中，输出函数名列表，列表中每个元素都是字符串，代表要运行的函数名称和参数。每个函数既可以单独运行，也可以和其他函数先后运行。列表元素的先后顺序，表示执行函数的先后顺序
@@ -126,8 +117,9 @@ def get_response(command_str,use_rag):
         response = generate_operations_sequence(command_str)
         response = json.loads(response)
       
-    #   return response['response']
+      return response['response']
 
 if __name__ == '__main__':
     # generate_operations_sequence("旋转180度")
-    get_response("帮我拿起红色物体",True)
+    res = get_response("你面前有什么东西",True)
+    print(res)

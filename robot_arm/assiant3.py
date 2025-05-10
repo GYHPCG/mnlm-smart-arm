@@ -19,6 +19,7 @@ from arm_left_right import left_right
 from arm_rotate import arm_rotate
 from move_single_servo import move_single_servo
 from move_all_servo import move_all_servo
+from grab_block import vlm_move_ready,top_view_shot_full_fushi
 import json
 from listener import get_received_command 
 import os
