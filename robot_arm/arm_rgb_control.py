@@ -14,13 +14,14 @@ Arm = Arm_Device()
 time.sleep(.1)
 
 def rgb_control(r,g,b):
-    Arm.Arm_RGB_set(50, 0, 0) #RGB亮红灯
+    # Arm.Arm_RGB_set(50, 0, 0) #RGB亮红灯
     time.sleep(.5)
     # Arm.Arm_RGB_set(0, 50, 0) #RGB亮绿灯
     # time.sleep(.5)
     # Arm.Arm_RGB_set(0, 0, 50) #RGB亮蓝灯
-    # time.sleep(.5)
-
+    
+    Arm.Arm_RGB_set(r, g, b)
+    time.sleep(.5)
     print(" END OF LINE! ")
 
 
