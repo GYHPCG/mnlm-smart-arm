@@ -357,7 +357,7 @@ def transfer_object_to_target(result,img_path):
     target.double_vlm_target_run(msg)
 
 def get_xy(result, img_path):
-
+    START_X_CENTER, START_Y_CENTER= post_processing_viz_one(result, img_path, check=True)
     START_X_MIN = int(result['start_xyxy'][0][0])
     START_Y_MIN = int(result['start_xyxy'][0][1])
     # 起点，右下角像素坐标
@@ -373,8 +373,8 @@ def get_xy(result, img_path):
     return msg
     
 
-def move_to_other(result):
-     msg = get_xy(result)
+def move_to_other(result,img_path):
+     msg = get_xy(result,img_path)
 
      target      = identify_GetTarget()
      
