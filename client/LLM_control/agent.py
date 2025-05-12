@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-10 16:03:38
+LastEditTime: 2025-05-12 14:49:53
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -15,15 +15,20 @@ import os
 
 
 def generate_prompt(command_str)->str:
-    api_document_path = './robot_arm_api.md'
-    print("api_document_path: ", api_document_path)
+    robot_arm_document_path = './robot_arm.md'
+    print("api_document_path: ", robot_arm_document_path)
 
-    if os.path.exists(os.path.expanduser(api_document_path)):
-                with open(os.path.expanduser(api_document_path), "r",encoding='utf-8') as f:
+    if os.path.exists(os.path.expanduser(robot_arm_document_path)):
+                with open(os.path.expanduser(robot_arm_document_path), "r",encoding='utf-8') as f:
+                    robot_arm_document= "".join(f.readlines())
+
+    robto_arm_api_document = '../rag/operations_data.json'
+    if os.path.exists(os.path.expanduser(robto_arm_api_document)):
+                with open(os.path.expanduser(robto_arm_api_document), "r",encoding='utf-8') as f:
                     api_document = "".join(f.readlines())
 
     SYSTEM_PROMOPT=f"""
-    你有一个大脑和一个机械臂，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来)。
+    你有一个大脑和一个机械臂，同时你是一个任务规划大师，对输入的指令可以进行理解和任务分解，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来)。
     【输出json格式】
     你直接输出json本身内容即可,不需要```json的开头或结尾
     在"function"键中，输出函数名列表，列表中每个元素都是字符串，代表要运行的函数名称和参数。每个函数既可以单独运行，也可以和其他函数先后运行。列表元素的先后顺序，表示执行函数的先后顺序
@@ -53,9 +58,11 @@ def generate_prompt(command_str)->str:
     ---
     {api_document}
     ---
-
-
-    你现在的任务是：
+    robot_arm document:
+    ___
+    {robot_arm_document}
+    ---
+    你现在接收到的指令是：
     ---
     {command_str}
     ---

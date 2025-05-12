@@ -20,6 +20,7 @@ from arm_rotate import arm_rotate
 from move_single_servo import move_single_servo
 from move_all_servo import move_all_servo
 from grab_block import vlm_move_ready,top_view_shot_full_fushi
+from utils_vlm import move_to
 import json
 from listener import get_received_command 
 import os

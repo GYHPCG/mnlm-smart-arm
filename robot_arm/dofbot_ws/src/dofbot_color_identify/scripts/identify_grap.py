@@ -80,6 +80,30 @@ class identify_grap:
             # 移动完毕
             self.move_status = True
 
+    def move_to(self, joints):
+        '''
+        机械臂移动函数
+        :param name:识别的颜色
+        :param joints: 反解求得的各关节角度
+        '''
+        if self.move_status == True:
+            # 此处设置,需执行完本次操作,才能向下运行
+            self.move_status = False
+            # print ("red")
+            # print (joints[0], joints[1], joints[2], joints[3], joints[4])
+            # 获得目标关节角
+            joints = [joints[0], joints[1], joints[2], joints[3], 265, 30]
+            # 移动到垃圾桶上方对应姿态
+#             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
+            # 移动到垃圾桶位置放下对应姿态
+            # joints_down = [45, 50, 20, 60, 265, self.grap_joint]
+            
+            # 移动
+            self.arm.Arm_serial_servo_write6_array(joints, 1000)
+            sleep(0.5)
+            # 移动完毕
+            self.move_status = True
+
     def double_vlm_move(self,start_joints,end_joints):
         '''
         机械臂移动函数

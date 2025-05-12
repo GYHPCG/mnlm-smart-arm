@@ -147,7 +147,7 @@
     },
     {
         "function_name": "vlm_move",
-        "description": "视觉抓取物品，控制机械臂抓起当前指定物体，然后移动到其他位置",
+        "description": "视觉抓取物品，控制机械臂抓起当前指定物体，然后移动到其他位置。这是函数是一个组合动作：移动-抓取-移动-放置",
         "parameters": {
             "PROMPT": {
                 "type": "str",
@@ -186,6 +186,20 @@
         "example": {
             "instruction": "即将准备进行抓取动作",
             "arm_action": "vlm_move_ready"
+        }
+    },
+    {
+        "function_name": "move_to",
+        "description": "z轴位置是固定的，x轴和y轴位置可变，参数传入指令，然后函数内部调用多模态大模型给出物体x轴和y轴的位置，最后机械臂移动到指定位置",
+        "parameters": {
+            "PROMPT": {
+                "type": "str",
+                "description": "输入需要机械臂操作的相关自然语言指令,然后在函数内部调用多模态识别出位置(x,y)"
+            }
+        },
+        "example": {
+            "instruction": "移动到红色方块的位置",
+            "arm_action": "move_to(PROMPT=''移动到红色方块的位置')"
         }
     }
 ]

@@ -249,6 +249,28 @@ class identify_GetTarget:
             # 移动至初始位置
             self.arm.Arm_serial_servo_write6_array(joints_0, 500)
             sleep(0.5)
+    
+    def move_to(self, msg, xy=None):
+        '''
+        抓取函数
+        :param msg: (颜色,位置)
+        '''
+        if xy != None: self.xy = xy
+        move_status=0
+        for i in msg.values():
+            if i !=None: move_status=1
+        if move_status==1:
+            self.arm.Arm_Buzzer_On(1)
+            sleep(0.5)
+        for name,pos in msg.items():
+            # print "pos : ",pos
+            # print "name : ",name
+            try:
+                # 此处ROS反解通讯,获取各关节旋转角度
+                joints = self.server_joint(pos)
+                # 调取移动函数
+                self.grap.move_to(joints)
+            except Exception: print("sqaure_pos empty")
             
     def server_joint(self, posxy):
         '''
@@ -333,6 +355,32 @@ def transfer_object_to_target(result,img_path):
         "end": end_targets,
     }
     target.double_vlm_target_run(msg)
+
+def get_xy(result, img_path):
+
+    START_X_MIN = int(result['start_xyxy'][0][0])
+    START_Y_MIN = int(result['start_xyxy'][0][1])
+    # 起点，右下角像素坐标
+    START_X_MAX = int(result['start_xyxy'][1][0])
+    START_Y_MAX = int(result['start_xyxy'][1][1])
+
+    target      = identify_GetTarget()
+    start_targets = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
+    
+    msg = {
+        "start": start_targets,
+    }
+    return msg
+    
+
+def move_to_other(result):
+     msg = get_xy(result)
+
+     target      = identify_GetTarget()
+     
+     target.move_to(msg)
+
+    
 
 import numpy as np
 
