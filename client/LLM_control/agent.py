@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-12 14:49:53
+LastEditTime: 2025-05-12 18:49:07
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -28,11 +28,12 @@ def generate_prompt(command_str)->str:
                     api_document = "".join(f.readlines())
 
     SYSTEM_PROMOPT=f"""
-    你有一个大脑和一个机械臂，同时你是一个任务规划大师，对输入的指令可以进行理解和任务分解，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来)。
+    你有一个大脑和一个机械臂，同时你是一个任务规划大师，对输入的指令可以进行理解和任务分解，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来),注意当涉及到拿起某个物体，抓起某个物体的时候，直接调用vlm_move函数。
+    【重要】如果用户的指令是闲聊、提问（例如"你是谁"、"你能做什么"， "你觉得人工智能怎么样"）、打招呼或任何不需要机械臂执行具体物理动作的请求，请将 "function" 字段设置为空列表 `[]`，然后按照自己知道的结果回复。
     【输出json格式】
     你直接输出json本身内容即可,不需要```json的开头或结尾
-    在"function"键中，输出函数名列表，列表中每个元素都是字符串，代表要运行的函数名称和参数。每个函数既可以单独运行，也可以和其他函数先后运行。列表元素的先后顺序，表示执行函数的先后顺序
-    在"response"键中，根据我的指令和你编排的动作，以第一人称输出你回复我的话，不要超过50个字，可以幽默和发散，用上歌词、台词、互联网热梗、名场面。
+    在"function"键中，输出函数名列表，列表中每个元素都是字符串，代表要运行的函数名称和参数。每个函数既可以单独运行，也可以和其他函数先后运行。列表元素的先后顺序，表示执行函数的先后顺序。如果不需要执行任何动作，则输出空列表 `[]`。
+    在"response"键中，根据我的指令和你编排的动作（或不执行动作），以第一人称输出你回复我的话，不要超过50个字，可以幽默和发散，用上歌词、台词、互联网热梗、名场面。
     【以下是一些具体的例子】
     An example output would be:
         {{
@@ -51,6 +52,14 @@ def generate_prompt(command_str)->str:
             "function": ["move_all_servo([0, 90, 90, 45, 32, 0],op_time)"],
             "response": "好的，执行 move_all_servo 动作。" 
         }},
+        {{ // 这是一个闲聊的例子
+            "function": [],
+            "response": "你好！很高兴和你聊天。"
+        }},
+        {{ // 这是回答问题的例子
+             "function": [],
+             "response": "我是一个能帮你干活的机械臂！"
+        }}
 
     Note: The list of operations can be 1 ore many. And the servos are with ids from 1 to 6.
     ---
@@ -79,10 +88,6 @@ def generate_operations_sequence(command_str):
     # command = get_received_command()
     PROMOPT= generate_prompt(command_str)
     chat_completion = client.chat.completions.create(
-        # name="Voice Robot Controller",
-        # instructions="""
-        #     You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly.
-        # """,
         messages=[
             {
                 "role": "user",
@@ -102,11 +107,6 @@ def generate_operations_sequence(command_str):
     # 将字符串解析为字典
     send_commands_to_service(response_content,"http://192.168.43.144:5688/robot_command")
 
-    # response_content = json.loads(response_content)
-    
-    # for each in response_content['function']: # 运行智能体规划编排的每个函数
-    #         print('开始执行动作', each)
-    #         eval(each)
     return response_content
 
 def get_response(command_str,use_rag):

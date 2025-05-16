@@ -12,7 +12,7 @@ Parameter explanation:
 
 id: The ID number of the servo to be controlled, ranging from 1 to 6. Each ID number represents a servo. The ID of the bottom servo is 1 and increases upwards. The ID of the top servo is 6.
 
-angle: The angle to which the servo is to be controlled. Except for the No. 5 servo (ID=5), the control range of the other servos is 0~180,  when  the angle value is the 90, the servo will rotate to the middle position. and the control range of the No. 5 servo is 0~270.
+angle: The angle to which the servo is to be controlled. Except for the No. 5 servo (ID=5), the control range of the other servos is 0~180,  when  the angle value is the 90, the servo is in the middle position, 0~90 is left, 90 ~180 is right. and the control range of the No. 5 servo is 0~270.
 
 time: Controls the time the servo runs. Within the valid range, the servo rotates at the same angle. The smaller the input running time, the faster the servo moves. Entering 0 will cause the servo to run at the fastest speed.
 

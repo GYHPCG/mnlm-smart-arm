@@ -91,7 +91,7 @@
     },
     {
         "function_name": "arm_clamp_block",
-        "description": "控制机械臂的夹爪,可让夹爪张开和握紧",
+        "description": "控制机械臂的夹爪,可让夹爪抓住物体和放开物体，参数enable=1时，夹爪按照物体大小进行关闭到一定程度，enable=0时，夹爪打开",
         "parameters": {
             "enable": {
                 "type": "int",
@@ -99,13 +99,13 @@
             }
         },
         "example": {
-            "instruction": "让机械臂握紧拳头",
+            "instruction": "抓住物体",
             "arm_action": "arm_clamp_block(1)"
         }
     },
     {
         "function_name": "follow_color_run",
-        "description": "注意，这个功能跟抓取无关，它只是一个小功能，让机械臂镜头跟随选择的颜色",
+        "description": "注意，这个功能跟抓取物体无关，它只是一个小功能，色彩追踪，让机械臂镜头跟随选择的颜色",
         "parameters": {
             "color": {
                 "type": "str",
@@ -119,7 +119,7 @@
     },
     {
         "function_name": "snake_follow_run",
-        "description": "注意，这个功能跟抓取无关，它只是一个小功能，能让机械臂镜头来玩引蛇出洞的游戏",
+        "description": "注意，这个功能跟抓取物体无关，它只是一个小功能，引蛇出洞，能让机械臂镜头来玩引蛇出洞的游戏",
         "parameters": {
             "color": {
                 "type": "str",
@@ -161,7 +161,7 @@
         },
         "example": {
             "instruction": "帮我把绿色方块放在红色方块上",
-            "arm_action": "vision_identify(PROMPT='图像中有什么东西')"
+            "arm_action": "vlm_move(PROMPT='帮我把绿色方块放在红色方块上')"
         }
     },
     {
@@ -185,12 +185,12 @@
         },
         "example": {
             "instruction": "即将准备进行抓取动作",
-            "arm_action": "vlm_move_ready"
+            "arm_action": "vlm_move_ready()"
         }
     },
     {
         "function_name": "move_to",
-        "description": "z轴位置是固定的，x轴和y轴位置可变，参数传入指令，然后函数内部调用多模态大模型给出物体x轴和y轴的位置，最后机械臂移动到指定位置",
+        "description": "函数内部调用多模态大模型给出物体x轴和y轴的位置，然后让机械臂移动到指定位置",
         "parameters": {
             "PROMPT": {
                 "type": "str",
@@ -200,6 +200,25 @@
         "example": {
             "instruction": "移动到红色方块的位置",
             "arm_action": "move_to(PROMPT=''移动到红色方块的位置')"
+        }
+    },
+    {
+        "function_name": {},
+        "description": "机械臂摇头晃脑",
+        "operations": [
+            {
+                "operation": "move_single_servo",
+                "parameters": {"id": "servo3", "angle": 50, "time": 500}
+            },
+            {
+                "operation": "move_single_servo",
+                "parameters": {"id": "servo3", "angle": 0, "time": 500}
+            }
+
+        ],
+        "example": {
+            "instruction": "机械臂摇头晃脑",
+            "arm_action": {}
         }
     }
 ]
