@@ -91,7 +91,7 @@
     },
     {
         "function_name": "arm_clamp_block",
-        "description": "控制机械臂的夹爪,可让夹爪抓住物体和放开物体，参数enable=1时，夹爪关闭，enable=0时，夹爪打开",
+        "description": "控制机械臂的夹爪,可让夹爪抓住物体和放开物体，参数enable=1时，夹爪按照物体大小进行关闭到一定程度，enable=0时，夹爪打开",
         "parameters": {
             "enable": {
                 "type": "int",
@@ -213,10 +213,6 @@
             {
                 "operation": "move_single_servo",
                 "parameters": {"id": "servo3", "angle": 0, "time": 500}
-            },
-            {
-                "operation": "move_all_servos",
-                "parameters": {"angles": [0, 0, 0, 0, 0, 0, 0], "time": 500}
             }
 
         ],
