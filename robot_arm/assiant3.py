@@ -24,7 +24,7 @@ from utils_vlm import move_to
 import json
 from listener import get_received_command 
 import os
-from vlm_agent import vlm_move
+from vlm_agent import vlm_move,tradition_grasp_object
 from vision_identify import vision_identify 
 import sys
 sys.path.append("/home/dofbot/code/mnlm-smart-arm/robot_arm/dofbot_ws/src")

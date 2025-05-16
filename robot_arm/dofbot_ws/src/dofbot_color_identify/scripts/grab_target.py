@@ -52,7 +52,109 @@ class identify_GetTarget:
             if pos != None: msg[self.color_name] = pos
         return self.image, msg
 
-
+    def cv_select_color(self, image, color_hsv, color_list):
+        '''
+        选择识别颜色
+        :param image:输入图像
+        :param color_hsv: 示例{color_name:((lowerb),(upperb))}
+        :param color_list: 颜色序列:['0'：无 '1'：红色 '2'：绿色 '3'：蓝色 '4'：黄色]
+        :return: 输出处理后的图像,(颜色,位置)
+        '''
+        # 规范输入图像大小
+        self.image = cv.resize(image, (640, 480))
+        msg = {}
+        if len(color_list)==0:return self.image,msg
+        if '1' in color_list:
+            self.color_name=color_list['1']
+            pos = self.cv_get_xy(color_hsv[self.color_name])
+            if pos != None: msg[self.color_name] = pos
+        if '2' in color_list:
+            self.color_name=color_list['2']
+            pos = self.cv_get_xy(color_hsv[self.color_name])
+            if pos != None: msg[self.color_name] = pos
+        if '3' in color_list:
+            self.color_name=color_list['3']
+            pos = self.cv_get_xy(color_hsv[self.color_name])
+            if pos != None: msg[self.color_name] = pos
+        if '4' in color_list:
+            self.color_name=color_list['4']
+            pos = self.cv_get_xy(color_hsv[self.color_name])
+            if pos != None: msg[self.color_name] = pos
+        return self.image, msg
+         
+    def cv_get_xy(self, color_hsv):
+        '''
+        颜色识别,获得方块的左上角和右下角坐标（图像坐标系）
+        '''
+        (lowerb, upperb) = color_hsv
+        # 创建图像副本进行处理
+        processed_img = self.image.copy()
+        
+        # HSV颜色空间转换
+        hsv = cv.cvtColor(processed_img, cv.COLOR_BGR2HSV)
+        
+        # 颜色阈值处理
+        color_mask = cv.inRange(hsv, lowerb, upperb)
+        
+        # 形态学闭操作（填充小孔洞）
+        kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
+        closed_mask = cv.morphologyEx(color_mask, cv.MORPH_CLOSE, kernel)
+        
+        # 查找轮廓
+        contours, _ = cv.findContours(closed_mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+        
+        for cnt in contours:
+            # 获取矩形边界框坐标
+            x, y, w, h = cv.boundingRect(cnt)
+            
+            # 计算轮廓面积进行筛选
+            if cv.contourArea(cnt) > 1000:
+                # 原始图像坐标系下的坐标
+                left_top = (x, y)
+                right_bottom = (x + w, y + h)
+                
+                # 坐标系转换（根据原转换逻辑调整）
+                # 原中心点转换公式：
+                # a = (point_x - 320)/4000 
+                # b = ((480 - point_y)/3000)*0.8+0.19
+                # 对边界点应用类似转换
+                converted_lt = (
+                    round((left_top[0] - 320) / 4000, 5),  # X坐标转换
+                    round(((480 - left_top[1]) / 3000) * 0.8 + 0.19, 5)  # Y坐标转换
+                )
+                
+                converted_rb = (
+                    round((right_bottom[0] - 320) / 4000, 5),
+                    round(((480 - right_bottom[1]) / 3000) * 0.8 + 0.19, 5)
+                )
+    
+                # 可视化标注（在原图上绘制）
+                # 绘制边界框
+                cv.rectangle(self.image, left_top, right_bottom, (0, 255, 0), 2)
+                
+                # 标注左上角坐标
+                cv.putText(self.image, 
+                           f"LT: {converted_lt}", 
+                           (left_top[0]-15, left_top[1]-15),
+                           cv.FONT_HERSHEY_SIMPLEX, 
+                           0.6, (255, 0, 255), 2)
+                
+                # 标注右下角坐标
+                cv.putText(self.image, 
+                           f"RB: {converted_rb}", 
+                           (right_bottom[0]-100, right_bottom[1]+25),
+                           cv.FONT_HERSHEY_SIMPLEX, 
+                           0.6, (255, 0, 255), 2)
+    
+                print("原始坐标 - 左上:", left_top, "右下:", right_bottom)
+                print("转换坐标 - 左上:", converted_lt, "右下:", converted_rb)
+                print("------------------ identify completed -------------------")
+                
+                # 返回原始+转换后的坐标（可根据需求选择返回内容）
+                return [[x,y],[x+w,y+h]]
+        # 未检测到符合条件的方块
+        return None
+    
     def image_to_arm_coordinates(self, top_left, bottom_right):
         """
         将图像坐标转换为机械臂可用坐标
@@ -373,6 +475,37 @@ def get_xy(result, img_path):
     return msg
     
 
+def cv_get_xy(img_path,color_list):
+    # 初始化HSV值
+    color_hsv  = {"red"   : ((0, 43, 46), (10, 255, 255)),
+                  "green" : ((35, 43, 46), (77, 255, 255)),
+                  "blue"  : ((100, 43, 46), (124, 255, 255)),
+                  "yellow": ((26, 43, 46), (34, 255, 255))}
+    # color_list = {'0'："none",'1'："red",'2': "green",'3'："blue",'4'："yellow"}
+    target      = identify_GetTarget()
+    img = cv.imread(img_path)
+    _, msg = target.cv_select_color(img,color_hsv,color_list)
+    # color_name = color_list['4']
+    if '1' in color_list:
+            color_name=color_list['1']
+    if '2' in color_list:
+            color_name=color_list['2']
+    if '3' in color_list:
+            color_name=color_list['3']
+    if '4' in color_list:
+            color_name=color_list['4']   
+    print('-------')
+    print(color_name)
+    pos = msg[color_name]
+    print('-------------msg')
+    print(pos)
+    msg = {
+        'start':color_name,
+        'start_xyxy':pos
+    }
+    grasp_object(msg,img_path)
+    
+    
 def move_to_other(result,img_path):
      msg = get_xy(result,img_path)
 
@@ -392,12 +525,14 @@ def simulate_image():
     return img
 
 if __name__ == '__main__':
-    target      = identify_GetTarget()
-    targets = target.get_arm_coordinates(154,278,224,348)
-     # 输出结果
-    print("Detected Targets:", targets)
-    # ta =  {'red': (234, 233), 'green': (455, 222)}
-    ta =  {'start':targets}
-    # 假设我们有一个目标位置进行抓取测试
-    if targets:
-        target.vlm_target_run(ta)
+    # target      = identify_GetTarget()
+    # targets = target.get_arm_coordinates(154,278,224,348)
+    #  # 输出结果
+    # print("Detected Targets:", targets)
+    # # ta =  {'red': (234, 233), 'green': (455, 222)}
+    # ta =  {'start':targets}
+    # # 假设我们有一个目标位置进行抓取测试
+    # if targets:
+    #     target.vlm_target_run(ta)
+    color_list = {'4': 'yellow'}
+    cv_get_xy('/home/dofbot/code/mnlm-smart-arm/image/top_view_now11.jpg', color_list)

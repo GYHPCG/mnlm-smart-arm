@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 print('导入视觉大模型模块')
 import time
 import cv2
@@ -112,7 +113,64 @@ get_xy_prompt = '''
     我现在的指令是：
     '''
 
+cv_get_xy_prompt = ''''
+ 你正在使用一个视觉大模型,我现在有个函数可以获取物体的位置。cv_get_xy(img_path,color_list)。其中color_list的内容可为{"0"："none","1"："red","2": "green","3"："blue","4"："yellow"}。
+ 例子：1. 帮我抓住红色方块，则color_list = {"1":"red"}
+       2. 帮我拿起蓝色方块，则color_list = {"2": 'blue'}
 
+       现在我的指令是，帮我拿起红色方块。你需要返回这样的格式：
+       {
+          "response": "好的，我尝试帮你获取红色方块的位置",
+           "color_list": {"1": "red"}
+       }
+       只回复json本身即可，不要回复其它内容,如```json的开头或结尾。
+       我现在的指令是:
+       
+'''
+
+def cv_gpt_get_xy(PROMPT='抓到到红色方块位置', img_path='../image/top_view_now11.jpg'):
+    '''
+    gpt4o大模型API
+    '''
+    
+    client = OpenAI(
+        # openai系列的sdk，包括langchain，都需要这个/v1的后缀
+        base_url='https://api.openai-proxy.org/v1',
+        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+    )
+    # 编码为base64数据
+    base64_image = encode_image(img_path)
+    
+    chat_completion = client.chat.completions.create(
+        model="gpt-4o-2024-11-20",
+        messages=[
+            {
+                "role": "user",
+                "content":f"{cv_get_xy_prompt} + {PROMPT}"
+            }
+        ],
+    ) 
+     
+    # print(chat_completion)
+    response_content = chat_completion.choices[0].message.content.strip()
+    # xy = json_data['position']
+    print("获取x,y坐标成功")
+    print(response_content)
+    return response_content
+
+def cv_get_result(PROMPT='移动到黄色方块位置',img_path='../image/top_view_now11.jpg'):
+    res = cv_gpt_get_xy(PROMPT,img_path)
+    res = json.loads(res)
+    color_list = res.get("color_list", {})
+    print(color_list)
+    return color_list
+
+def cv_grasp_object(PROMPT='移动到黄色方块位置',img_path='../image/top_view_now11.jpg'):
+    color_list = cv_get_result(PROMPT,img_path)
+    cv_get_xy(img_path,color_list)
+    
+    
+    
 def get_xy(PROMPT='移动到红色方块位置', img_path='../image/top_view_now11.jpg'):
     '''
     gpt4o大模型API
@@ -354,4 +412,4 @@ if __name__ == '__main__':
     # print(result)
     # post_processing_viz(result, img_path='../image/top_view_now11.jpg', check=True)
 
-    res = get_xy("获取蓝色方块的位置",img_path='../image/top_view_now11.jpg')
+    res = cv_get_result("获取黄色方块的位置",img_path='../image/top_view_now11.jpg')

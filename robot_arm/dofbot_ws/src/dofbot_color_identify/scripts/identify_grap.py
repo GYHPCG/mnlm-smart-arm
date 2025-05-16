@@ -19,7 +19,7 @@ class identify_grap:
         移动过程
         :param joints: 移动到物体位置的各关节角度
         :param joints_down: 机械臂抬起各关节角度
-        :param color_angle: 移动到对应垃圾桶的角度
+        :param color_angle: 移动到旁边的角度
         '''
         joints_uu = [90, 80, 50, 50, 265, self.grap_joint]
         # 抬起
