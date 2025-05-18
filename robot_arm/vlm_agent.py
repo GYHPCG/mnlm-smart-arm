@@ -71,7 +71,7 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     cv2.destroyAllWindows()   # 关闭所有opencv窗口
     # exit()
 
-def tradition_grasp_object(PROMPT='帮我拿起红色方块', input_way='keyboard'):
+def tradition_grasp_object(PROMPT='帮我拿起蓝色方块', input_way='keyboard'):
     '''
     多模态大模型识别图像，吸泵吸取并移动物体
     input_way：speech语音输入，keyboard键盘输入

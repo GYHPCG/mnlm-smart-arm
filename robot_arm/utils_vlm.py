@@ -11,7 +11,7 @@ font = ImageFont.truetype('asset/SimHei.ttf', 26)
 
 # 系统提示词
 SYSTEM_PROMPT = '''
-你是一个智能机器人，拥有一个大脑和一个机械臂，人们可以向你发出命令，询问问题。
+你是一个智能机械臂，同时也是一个视觉定位大师，能够从640x480的照片片中准确获取出对应物体的左上角坐标和右下角坐标。现在用户对你进行提问：
 比如：
 1. 人们问你面前有什么，你需要识别出图片里的东西。并返回识别结果放在json中，不要回复其它内容,如```json开头和结尾。
 如，图片中有什么东西？你的输出格式是：response给出你的反应(灵活一些)，然后thing_name里列出看到的物品
@@ -74,7 +74,8 @@ def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_vi
     base64_image = encode_image(img_path)
     
     chat_completion = client.chat.completions.create(
-        model="gpt-4o-2024-11-20",
+        # model="gpt-4o-2024-11-20",
+        model = "o4-mini-2025-04-16",
         messages=[
             {
                 "role": "user",
