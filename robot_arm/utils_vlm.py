@@ -99,6 +99,44 @@ def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_vi
 
     return response_content
 
+def QwenVL_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_view_now11.jpg'):
+    '''
+    gpt4o大模型API
+    '''
+    
+    client = OpenAI(
+        # openai系列的sdk，包括langchain，都需要这个/v1的后缀
+        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        api_key='sk-5976ceeed2fc4165b57d9b4d9c5d5f86',
+    )
+    # 编码为base64数据
+    base64_image = encode_image(img_path)
+    
+    chat_completion = client.chat.completions.create(
+        # model="gpt-4o-2024-11-20",
+        model = "qwen-vl-max",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    { "type": "text", "text": f"{SYSTEM_PROMPT + PROMPT}" },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}",
+                        },
+                    },
+                ],
+            }
+        ],
+    ) 
+     
+    # print(chat_completion)
+    response_content = chat_completion.choices[0].message.content.strip()
+    print("QwenVL vlm 多模态模型调用成功")
+    print(response_content)
+
+    return response_content
 
 
 get_xy_prompt = '''
@@ -413,4 +451,5 @@ if __name__ == '__main__':
     # print(result)
     # post_processing_viz(result, img_path='../image/top_view_now11.jpg', check=True)
 
-    res = cv_get_result("获取黄色方块的位置",img_path='../image/top_view_now11.jpg')
+    # res = cv_get_result("获取黄色方块的位置",img_path='../image/top_view_now11.jpg')
+    QwenVL_API(PROMPT='你看到了什么', img_path='../image/top_view_now11.jpg')

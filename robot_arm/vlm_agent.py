@@ -49,7 +49,7 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
         try:
             print('    尝试第 {} 次访问多模态大模型'.format(n))
             # result = yi_vision_api(PROMPT, img_path='temp/vl_now.jpg')  # yi_vision定位能力出现波动，暂时换用QwenVL系列
-            result = gpt4o_API(PROMPT, img_path=img_path)
+            result = QwenVL_API(PROMPT, img_path=img_path)
             result = json.loads(result)
             print('    多模态大模型调用成功！')
             print(result)
