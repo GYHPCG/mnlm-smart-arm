@@ -7,7 +7,7 @@ import faiss
 import numpy as np
 from dotenv import load_dotenv
 from openai import OpenAI
-from utils import Logger
+from ..client.LLM_control.utils import Logger
 
 
 class InstructionIndexer:

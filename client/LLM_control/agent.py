@@ -12,7 +12,7 @@ import json
 from rag_indexer import get_rag_result
 from command_send import send_commands_to_service
 import os
-
+import time
 
 def generate_prompt(command_str)->str:
     robot_arm_document_path = './robot_arm.md'
@@ -33,7 +33,7 @@ def generate_prompt(command_str)->str:
     【输出json格式】
     你直接输出json本身内容即可,不需要```json的开头或结尾
     在"function"键中，输出函数名列表，列表中每个元素都是字符串，代表要运行的函数名称和参数。每个函数既可以单独运行，也可以和其他函数先后运行。列表元素的先后顺序，表示执行函数的先后顺序。如果不需要执行任何动作，则输出空列表 `[]`。
-    在"response"键中，根据我的指令和你编排的动作（或不执行动作），以第一人称输出你回复我的话，不要超过50个字，可以幽默和发散，用上歌词、台词、互联网热梗、名场面。
+    在"response"键中，根据我的指令和你编排的动作（或不执行动作），以第一人称输出你回复我的话，不要超过100个字，可以幽默和发散，用上歌词、台词、互联网热梗、名场面。
     【以下是一些具体的例子】
     An example output would be:
         {{

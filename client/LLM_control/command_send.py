@@ -7,7 +7,7 @@ FilePath: \code\mnlm-smart-arm\command_send.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
 import json
-import os
+import time
 
 import requests
 
@@ -46,6 +46,7 @@ def send_commands_to_service(user_input, service_url):
         print(f"Final JSON to send: {json_com}")
 
         # 发送请求
+        time.sleep(2)
         response = requests.post(service_url, json=json.loads(json_com))
 
         # 检查响应状态
