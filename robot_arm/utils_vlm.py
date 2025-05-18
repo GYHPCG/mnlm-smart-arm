@@ -11,12 +11,12 @@ font = ImageFont.truetype('asset/SimHei.ttf', 26)
 
 # 系统提示词
 SYSTEM_PROMPT = '''
-你是一个智能机械臂，同时也是一个视觉定位大师，能够从640x480的照片片中准确获取出对应物体的左上角坐标和右下角坐标。现在用户对你进行提问：
+你是一个智能机械臂，同时也是一个视觉定位大师,获取指定物体的bbox坐标，能够从长x宽为640x480的照片中准确得出对应物体的外边界矩形框的左上角坐标和右下角坐标的像素坐标,即得到bbox的坐标，注意！！！x的坐标范围为(0,640),y的坐标范围为(0,480)。现在用户对你进行提问：
 比如：
 1. 人们问你面前有什么，你需要识别出图片里的东西。并返回识别结果放在json中，不要回复其它内容,如```json开头和结尾。
 如，图片中有什么东西？你的输出格式是：response给出你的反应(灵活一些)，然后thing_name里列出看到的物品
 {
-    "response":"好的，再在图片中我看到了一些东西"
+    "response":"好的，再在图片中我看到了一些东西",
     "thing_name": ["红色方块", "绿色方块", "房子简笔画"]
 }
 ---
@@ -24,7 +24,7 @@ SYSTEM_PROMPT = '''
 {
  "response": "好的，我尝试帮你拿起红色方块",
  "start":"红色方块",
- "start_xyxy":[[102,505],[324,860]],
+ "start_xyxy":[[102,505],[324,560]]
 }
 
 只回复json本身即可，不要回复其它内容,如```json的开头或结尾。
@@ -35,7 +35,7 @@ SYSTEM_PROMPT = '''
 {
  "thing_name": ["红色方块", "绿色方块", "房子简笔画"],
  "start":"红色方块",
- "start_xyxy":[[102,505],[324,860]],
+ "start_xyxy":[[102,505],[324,560]],
  "end":"蓝色方块",
  "end_xyxy":[[300,150],[476,310]]
 }
@@ -101,7 +101,7 @@ def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_vi
 
 def QwenVL_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_view_now11.jpg'):
     '''
-    gpt4o大模型API
+    QwenVL-max大模型API
     '''
     
     client = OpenAI(
@@ -113,8 +113,7 @@ def QwenVL_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_v
     base64_image = encode_image(img_path)
     
     chat_completion = client.chat.completions.create(
-        # model="gpt-4o-2024-11-20",
-        model = "qwen-vl-max",
+        model = "qwen2.5-vl-72b-instruct",
         messages=[
             {
                 "role": "user",

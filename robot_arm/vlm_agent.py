@@ -29,15 +29,15 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     print('多模态大模型识别图像，吸泵吸取并移动物体')
     
     # 机械臂归零
-    print('机械臂归零')
-    arm_zero()
+    # print('机械臂归零')
+    # arm_zero()
     
     print('第二步，给出的指令是：', PROMPT)
     
     ## 第三步：拍摄俯视图
     print('第三步：拍摄俯视图')
     vlm_move_ready()
-    print(top_view_shot.__module__)  # 输出函数所在的模块路径
+    # print(top_view_shot.__module__)  # 输出函数所在的模块路径
     top_view_shot(check=True)
     
     ## 第四步：将图片输入给多模态视觉大模型
@@ -48,7 +48,6 @@ def vlm_move(PROMPT='帮我把绿色方块放在红色方块上', input_way='key
     while n < 5:
         try:
             print('    尝试第 {} 次访问多模态大模型'.format(n))
-            # result = yi_vision_api(PROMPT, img_path='temp/vl_now.jpg')  # yi_vision定位能力出现波动，暂时换用QwenVL系列
             result = QwenVL_API(PROMPT, img_path=img_path)
             result = json.loads(result)
             print('    多模态大模型调用成功！')

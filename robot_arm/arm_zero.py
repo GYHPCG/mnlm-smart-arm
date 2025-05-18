@@ -16,7 +16,7 @@ Arm = Arm_Device()
 time.sleep(.1)
 
 def arm_zero():
-    Arm.Arm_serial_servo_write6(90, 135, 0, 45, 90, 0, 500)
+    Arm.Arm_serial_servo_write6(90, 135, 0, 45, 90, 135, 500)
     time.sleep(1)
 
 
