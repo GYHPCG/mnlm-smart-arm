@@ -373,7 +373,29 @@ class identify_GetTarget:
                 # 调取移动函数
                 self.grap.move_to(joints)
             except Exception: print("sqaure_pos empty")
-            
+                
+    def place_to(self, msg, xy=None):
+        '''
+        抓取函数
+        :param msg: (颜色,位置)
+        '''
+        if xy != None: self.xy = xy
+        move_status=0
+        for i in msg.values():
+            if i !=None: move_status=1
+        if move_status==1:
+            self.arm.Arm_Buzzer_On(1)
+            sleep(0.5)
+        for name,pos in msg.items():
+            # print "pos : ",pos
+            # print "name : ",name
+            try:
+                # 此处ROS反解通讯,获取各关节旋转角度
+                joints = self.server_joint(pos)
+                # 调取移动函数
+                self.grap.place_to(joints)
+            except Exception: print("sqaure_pos empty")    
+                
     def server_joint(self, posxy):
         '''
         发布位置请求,获取关节旋转角度
@@ -517,7 +539,7 @@ def place_to_other(result,img_path):
     msg = get_xy(result,img_path)
 
     target      = identify_GetTarget()
-    target.move_to(msg)
+    target.place_to(msg)
 
 import numpy as np
 

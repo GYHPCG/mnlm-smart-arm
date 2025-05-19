@@ -92,7 +92,7 @@ class identify_grap:
         # 抬起至对应位置上方
         self.arm.Arm_serial_servo_write(1, joints_down[0], 500)
         sleep(0.5)
-        抬起至对应位置
+        #抬起至对应位置
         self.arm.Arm_serial_servo_write6_array(joints_down, 1000)
         sleep(1)
         # # 释放物体,松开夹爪
@@ -147,7 +147,38 @@ class identify_grap:
             sleep(0.5)
             # 移动完毕
             self.move_status = True
-
+            
+    def place_to(self, joints):
+        '''
+        机械臂放置函数
+        :param name:识别的颜色
+        :param joints: 反解求得的各关节角度
+        '''
+        if self.move_status == True:
+            # 此处设置,需执行完本次操作,才能向下运行
+            self.move_status = False
+            # print ("red")
+            # print (joints[0], joints[1], joints[2], joints[3], joints[4])
+            # 获得目标关节角
+            joints = [joints[0], joints[1], joints[2], joints[3], 265, self.grap_joint]
+            # 移动到垃圾桶上方对应姿态
+#             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
+            # 移动到垃圾桶位置放下对应姿态
+            # joints_down = [45, 50, 20, 60, 265, self.grap_joint]
+            
+            # 移动
+            self.arm.Arm_serial_servo_write6_array(joints, 1000)
+            sleep(1)
+            # 移动完毕
+            # # 释放物体,松开夹爪
+            self.arm.Arm_serial_servo_write(6, 30, 500)
+            sleep(0.5)
+            # 抬起
+            # self.arm.Arm_serial_servo_write6_array(joints_up, 1000)
+            self.arm.Arm_serial_servo_write6(90, 135, 0, 45, 90, 30, 1000)
+            sleep(1)
+                
+            self.move_status = True
     def double_vlm_move(self,start_joints,end_joints):
         '''
         机械臂移动函数
