@@ -190,7 +190,7 @@
     },
     {
         "function_name": "move_to",
-        "description": "函数内部调用多模态大模型给出物体x轴和y轴的位置，然后让机械臂移动到指定位置。当没有指定具体位置时，LLM自己总结给出一个合适的位置",
+        "description": "函数内部调用多模态大模型给出物体x轴和y轴的位置，然后让机械臂移动到指定位置。",
         "parameters": {
             "PROMPT": {
                 "type": "str",
@@ -200,6 +200,20 @@
         "example": {
             "instruction": "移动到红色方块的位置",
             "arm_action": "move_to(PROMPT=''移动到红色方块的位置')"
+        }
+    },
+    {
+        "function_name": "place_to",
+        "description": "让机械臂将物体放置到指定位置",
+        "parameters": {
+            "PROMPT": {
+                "type": "str",
+                "description": "输入需要机械臂操作的相关自然语言指令,然后多模态模型得出放置位置"
+            }
+        },
+        "example": {
+            "instruction": "放到旁边位置去",
+            "arm_action": "move_to(PROMPT='放到旁边位置去')"
         }
     },
     {
