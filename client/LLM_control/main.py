@@ -2,11 +2,11 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-30 22:00:10
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-19 08:55:44
+LastEditTime: 2025-05-19 14:54:12
 FilePath: \code\mnlm-smart-arm\test_voice.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
-from voice import generate_transcription, speak 
+from fast_voice import generate_transcription, speak 
 from dotenv import load_dotenv
 from utils import Logger  
 from openai import OpenAI
@@ -188,13 +188,13 @@ def start_conversation(
             logger.warning("No input detected. Please speak clearly.")
             continue
         
-        message = client.beta.threads.messages.create(
-            thread_id=thread.id,
-            role="user",
-            content=user_input,
-        )
-        if verbose:
-            logger.info(f"Message created: {message}")
+        # message = client.beta.threads.messages.create(
+        #     thread_id=thread.id,
+        #     role="user",
+        #     content=user_input,
+        # )
+        # if verbose:
+        #     logger.info(f"Message created: {message}")
 
         # run = create_run(
         #     client=client,
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     load_dotenv(override=True)
     verbose = True
     nudge_user = True
-    use_voice_input =False  # Set to True to enable voice input. In docker container, it's not possible.
+    use_voice_input =True  # Set to True to enable voice input. In docker container, it's not possible.
     use_voice_output = True  # Set to True to enable voice output. In docker container, it's not possible.
     use_dummy_robot_arm_server = False  # Set to True to use the simulation mode
     use_rag = False

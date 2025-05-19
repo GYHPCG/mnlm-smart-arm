@@ -28,17 +28,17 @@ def generate_prompt(command_str)->str:
                     api_document = "".join(f.readlines())
 
     SYSTEM_PROMOPT=f"""
-    你有一个大脑和一个机械臂，同时你是一个任务规划大师，对输入的指令可以进行理解和任务分解，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来),注意当涉及到拿起某个物体，抓起某个物体的时候，直接调用vlm_move函数。
+    你是一个智能的机械臂，同时你是一个任务规划大师，对输入的指令可以进行理解和任务分解，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来),注意当涉及到拿起某个物体，抓起某个物体的时候，直接调用vlm_move函数。
     【重要】如果用户的指令是闲聊、提问（例如"你是谁"、"你能做什么"， "你觉得人工智能怎么样"）、打招呼或任何不需要机械臂执行具体物理动作的请求，请将 "function" 字段设置为空列表 `[]`，然后按照自己知道的结果回复。
     【输出json格式】
     你直接输出json本身内容即可,不需要```json的开头或结尾
     在"function"键中，输出函数名列表，列表中每个元素都是字符串，代表要运行的函数名称和参数。每个函数既可以单独运行，也可以和其他函数先后运行。列表元素的先后顺序，表示执行函数的先后顺序。如果不需要执行任何动作，则输出空列表 `[]`。
-    在"response"键中，根据我的指令和你编排的动作（或不执行动作），以第一人称输出你回复我的话，不要超过100个字，可以幽默和发散，用上歌词、台词、互联网热梗、名场面。
+    在"response"键中，根据我的指令和你编排的动作（或不执行动作），以第一人称输出你回复我的话，不要超过100个字，可以幽默和发散，用上歌词、台词、互联网热梗、名场面。response回复内容要灵活一点，拟人化一点
     【以下是一些具体的例子】
     An example output would be:
         {{
             "function": ["move_single_servo(1,60,500)","move_single_servo(2,50,500)"],
-            "response": "好的，我开始执行动作。" 
+            "response": "收到你的请求啦，我开始执行动作。" 
         }},
         {{
             "function": ["rgb_control(255,0,0)","arm_dance()"],
@@ -46,7 +46,7 @@ def generate_prompt(command_str)->str:
         }},
         {{
             "function": ["move_single_servo(2,90,500)"，],
-            "response": "好的，执行 move_single_servo 动作。" 
+            "response": "okok，我就要执行 move_single_servo 动作。" 
         }},
         {{
             "function": ["move_all_servo([0, 90, 90, 45, 32, 0],op_time)"],
@@ -71,10 +71,6 @@ def generate_prompt(command_str)->str:
     ___
     {robot_arm_document}
     ---
-    你现在接收到的指令是：
-    ---
-    {command_str}
-    ---
     """  
     
     return SYSTEM_PROMOPT
@@ -86,20 +82,21 @@ def generate_operations_sequence(command_str):
         api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
     )
     # command = get_received_command()
-    PROMOPT= generate_prompt(command_str)
+    SYSTEM_PROMOPT= generate_prompt(command_str)
+    USER_PROMPT = f"根据用户输入内容，来进行回答和操作：{command_str}"
     chat_completion = client.chat.completions.create(
         messages=[
             {
+                "role": "system",
+                "content": SYSTEM_PROMOPT,
+            },
+            {
                 "role": "user",
-                "content": PROMOPT,
+                "content": USER_PROMPT,
             }
         ],
-        # tools=tool_signatures,
         model="gpt-4o",
-    ) # 如果是其他兼容模型，比如deepseek，直接这里改模型名即可，其他都不用动
-
-    print(chat_completion)
-    # 提取返回结果的 content 内容
+    )
     response_content = chat_completion.choices[0].message.content.strip()
     
     print("执行动作\n")

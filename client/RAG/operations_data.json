@@ -99,7 +99,7 @@
             }
         },
         "example": {
-            "instruction": "抓住红色物体",
+            "instruction": "抓住红色物体，握紧拳头",
             "arm_action": "arm_clamp_block(1)"
         }
     },
@@ -133,7 +133,7 @@
     },
     {
         "function_name": "vision_identify",
-        "description": "能让机械臂识别出来当前摄像头所看到的物体",
+        "description": "能让机械臂识别出来当前摄像头所看到的物体，指令可以是：'你的面前有什么东西'，‘你看到了什么’",
         "parameters": {
             "PROMPT": {
                 "type": "str",
@@ -147,7 +147,7 @@
     },
     {
         "function_name": "vlm_move",
-        "description": "视觉抓取物品，控制机械臂抓起当前指定物体，然后移动到其他位置。这是函数是一个组合动作：移动-抓取-移动-放置",
+        "description": "视觉抓取物品，控制机械臂抓起当前指定物体，然后移动到其他位置。这是函数是一个组合动作：移动-抓取-移动-放置。注意！！！当指令是让机械臂放置物体的时候，不要调用这个函数，而是place_to函数",
         "parameters": {
             "PROMPT": {
                 "type": "str",
@@ -204,7 +204,7 @@
     },
     {
         "function_name": "place_to",
-        "description": "让机械臂将物体放置到指定位置",
+        "description": "让机械臂将物体放置到指定位置，当指令仅仅涉及到放置物体的时候，请调用这个函数，不要调用vlm_move函数",
         "parameters": {
             "PROMPT": {
                 "type": "str",

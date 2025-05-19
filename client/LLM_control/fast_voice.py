@@ -2,7 +2,7 @@ import audioop
 import os
 import time
 import wave
-
+import numpy as np
 import pyaudio  # type: ignore
 import pygame
 from dotenv import load_dotenv
@@ -32,8 +32,8 @@ def record_audio(
     """
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
-    RATE = 44100
-    CHUNK = 1024
+    RATE = 16000
+    CHUNK = 512
 
     p = pyaudio.PyAudio()
     stream = p.open(
@@ -46,17 +46,27 @@ def record_audio(
     frames = []
     silence_start = None
     silent_frames = 0
+    total_frames = 0
+    last_volume = 0
+    volume_history = []
 
     while True:
-        data = stream.read(CHUNK)
+        data = stream.read(CHUNK, exception_on_overflow=False)
         frames.append(data)
+        total_frames += 1
 
-        volume = audioop.rms(data, 2)  # Get the RMS of the frame
+        audio_data = np.frombuffer(data, dtype=np.int16)
+        volume = np.abs(audio_data).mean()
 
-        if volume < silence_threshold:
+        volume_history.append(volume)
+        if len(volume_history) > 5:
+            volume_history.pop(0)
+        smoothed_volume = sum(volume_history) / len(volume_history)
+
+        if smoothed_volume < silence_threshold:
             silent_frames += 1
             if silence_start is None:
-                silence_start = time.time()  # Mark the start of the silent period
+                silence_start = time.time()
             elif time.time() - silence_start > silence_duration:
                 if verbose:
                     print("* Silence detected, stopping recording")
@@ -64,15 +74,16 @@ def record_audio(
         else:
             silence_start = None
 
+        last_volume = smoothed_volume
+
     stream.stop_stream()
     stream.close()
     p.terminate()
 
-    # Check if the recording is predominantly silent
-    if silent_frames / len(frames) > silence_proportion_threshold:
+    if silent_frames / total_frames > silence_proportion_threshold:
         if verbose:
             print("Recording is mostly silent. No file saved.")
-        return ""  # Return empty string for mostly silent recording
+        return ""
 
     wf = wave.open(filename, "wb")
     wf.setnchannels(CHANNELS)
@@ -131,37 +142,31 @@ def generate_transcription(verbose: bool = True) -> str:
 
 # 是一个将文本转换为语音并播放的函数。它使用文本到语音（TTS，Text-to-Speech）技术生成语音文件，并通过 pygame 播放生成的音频。
 def speak(text: str, client: OpenAI) -> None:
-    # Generate the speech audio using TTS
+    # Generate the speech audio using TTS with optimized parameters
     response = client.audio.speech.create(
         model="tts-1",
         voice="alloy",
         input=text,
+        speed=1.2  # Slightly faster speech
     )
 
     # Stream the audio to a file
     audio_filename = "output.mp3"
     response.stream_to_file(audio_filename)
 
-    # Initialize pygame mixer with higher buffer size
-    pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+    # Initialize pygame mixer with optimized settings
+    pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=2048)  # Reduced buffer size
     pygame.mixer.music.load(audio_filename)
     
-    # Add a small delay to ensure audio system is ready
-    time.sleep(1)
-    
-    # Start playing
+    # Start playing immediately without delay
     pygame.mixer.music.play()
 
-    # Wait for the audio to finish playing
+    # Wait for the audio to finish playing with optimized polling
     while pygame.mixer.music.get_busy():
-        pygame.time.Clock().tick(10)
+        pygame.time.Clock().tick(30)  # Increased tick rate for faster response
     
-    # Add a small delay before cleanup
-    time.sleep(0.1)
-    
-    # Quit pygame mixer to release the file
+    # Cleanup
     pygame.mixer.quit()
-    # Delete the mp3 file
     os.remove(audio_filename)
 
 
