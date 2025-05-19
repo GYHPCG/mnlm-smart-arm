@@ -293,18 +293,18 @@ class identify_GetTarget:
                 # 调取移动函数
                 self.grap.vlm_move(joints)
             except Exception: print("sqaure_pos empty")
-        if move_status==1:
-            # 回到抓取起始位置
-            # 架起
-            joints_uu = [90, 80, 50, 50, 265, 30]
-            # 移动至物体位置上方
-            self.arm.Arm_serial_servo_write6_array(joints_uu, 1000)
-            sleep(1)
-            # 初始位置
-            joints_0 = [self.xy[0], self.xy[1], 0, 0, 90, 30]
-            # 移动至初始位置
-            self.arm.Arm_serial_servo_write6_array(joints_0, 500)
-            sleep(0.5)
+        # if move_status==1:
+        #     # 回到抓取起始位置
+        #     # 架起
+        #     joints_uu = [90, 80, 50, 50, 265, 30]
+        #     # 移动至物体位置上方
+        #     self.arm.Arm_serial_servo_write6_array(joints_uu, 1000)
+        #     sleep(1)
+        #     # 初始位置
+        #     joints_0 = [self.xy[0], self.xy[1], 0, 0, 90, 30]
+        #     # 移动至初始位置
+        #     self.arm.Arm_serial_servo_write6_array(joints_0, 500)
+        #     sleep(0.5)
 
     def double_vlm_target_run(self, msg, xy=None):
         '''
@@ -513,7 +513,11 @@ def move_to_other(result,img_path):
      
      target.move_to(msg)
 
-    
+def place_to_other(result,img_path):
+    msg = get_xy(result,img_path)
+
+    target      = identify_GetTarget()
+    target.move_to(msg)
 
 import numpy as np
 

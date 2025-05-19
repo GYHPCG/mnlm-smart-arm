@@ -13,7 +13,7 @@ def arm_clamp_block(enable):
         # Arm.Arm_serial_servo_write(id,40,68)
         Arm.Arm_serial_servo_write(6, 60, 400)
     else:
-        Arm.Arm_serial_servo_write(6, 160, 400)
+        Arm.Arm_serial_servo_write(6, 170, 400)
     time.sleep(.5)
 
 
