@@ -41,7 +41,7 @@
     },
     {
         "function_name": "move_single_servo",
-        "description": "控制机械臂的第i个舵机运动",
+        "description": "控制机械臂的第i个舵机运动angle度，运动时间为op_time",
         "parameters": {
             "id": {
                 "type": "int",
@@ -66,7 +66,7 @@
     },
     {
         "function_name": "move_all_servo",
-        "description": "一次性控制机械臂的6个舵机运动",
+        "description": "一次性控制机械臂的6个舵机运动对应的角度angles，运动时间为op_time",
         "parameters": {
             "angle": {
                 "type": "array",
@@ -99,7 +99,7 @@
             }
         },
         "example": {
-            "instruction": "抓住物体",
+            "instruction": "抓住红色物体",
             "arm_action": "arm_clamp_block(1)"
         }
     },
@@ -190,7 +190,7 @@
     },
     {
         "function_name": "move_to",
-        "description": "函数内部调用多模态大模型给出物体x轴和y轴的位置，然后让机械臂移动到指定位置",
+        "description": "函数内部调用多模态大模型给出物体x轴和y轴的位置，然后让机械臂移动到指定位置。当没有指定具体位置时，LLM自己总结给出一个合适的位置",
         "parameters": {
             "PROMPT": {
                 "type": "str",

@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-30 22:00:10
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-18 14:16:53
+LastEditTime: 2025-05-19 08:55:44
 FilePath: \code\mnlm-smart-arm\test_voice.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -34,6 +34,11 @@ def create_assistant(
     """
     if not client:
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    #     client = OpenAI(
+    #     # openai系列的sdk，包括langchain，都需要这个/v1的后缀
+    #     base_url='https://api.openai-proxy.org/v1',
+    #     api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+    # )
    
     assistant = client.beta.assistants.create(
         name="Voice Robot Controller",
@@ -42,6 +47,17 @@ def create_assistant(
         """,
         model="gpt-3.5-turbo-1106",
     )
+    # assistant = client.chat.completions.create(
+    #     # name="Voice Robot Controller",
+    #     # instructions="""
+    #     #     You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly.
+    #     # """,
+    #     messages=[
+    #         {"role": "system", "content": "You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly."},
+    #         {"role": "user", "content": ""},
+    #     ],
+    #     model="gpt-3.5-turbo-1106",
+    # )
     if verbose:
         logger.info(f"Assistant created: {assistant}")
     return assistant
