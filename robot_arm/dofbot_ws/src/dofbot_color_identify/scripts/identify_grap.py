@@ -67,6 +67,7 @@ class identify_grap:
         :param color_angle: 移动到旁边的角度
         '''
         rotate = self.arm.Arm_serial_servo_read(1)
+        print(f"no_place rotate: {rotate}")
         joints_uu = [rotate, 80, 50, 50, 265, self.grap_joint]
         # 抬起
         joints_up = [joints_down[0], 80, 50, 50, 265, 30]
@@ -121,7 +122,7 @@ class identify_grap:
 #             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
             # 移动到归中位置
             self.grap_joint = grasp_joint
-            
+
             rotate = self.arm.Arm_serial_servo_read(1)
             joints_center = [rotate, 135, 0, 45, 90, self.grap_joint]
             # 移动
