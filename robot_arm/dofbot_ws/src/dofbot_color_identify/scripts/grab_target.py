@@ -443,16 +443,16 @@ def grasp_object(result,img_path):
     START_X_MAX = int(result['start_xyxy'][1][0])
     START_Y_MAX = int(result['start_xyxy'][1][1])
     target      = identify_GetTarget()
-    target_xy = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
+    pos = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
      # 输出结果
-    print("Detected Targets:", target_xy)
+    print("Detected Targets:", pos)
     # ta =  {'red': (234, 233), 'green': (455, 222)}
     grasp_joint = int(result['grasp_joint'])
-    ta =  {'start':target_xy,
+    ta =  {'name':pos,
            "grasp":grasp_joint
         }
      # 假设我们有一个目标位置进行抓取测试
-    if target_xy:
+    if pos:
         target.vlm_target_run(ta)
         
 def transfer_object_to_target(result,img_path):
