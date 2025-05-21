@@ -29,7 +29,7 @@ SYSTEM_PROMPT = '''
  "response": "好的，我尝试帮你拿起红色方块",
  "start":"红色方块",
  "start_xyxy":[[102,505],[324,560]],
- "grasp_joint":  150
+ "grasp_joint":  160
 }
 
 只回复json本身即可，不要回复其它内容,如```json的开头或结尾。
@@ -78,7 +78,7 @@ SYSTEM_PROMPT = '''
 
 只回复json本身即可，不要回复其它内容,如```json的开头或结尾。
 
-[attention]!!!，grasp_joint参数，是抓取的joint，默认为150，你可以根据需要修改。一般对于夹取大物体grasp_joint=130，小物体grasp_joint=160。你可以自动调整
+[attention]!!!，grasp_joint参数，是抓取的joint，默认为160，你可以根据需要修改。一般对于夹取大物体grasp_joint=140，小物体grasp_joint=160。你可以自动调整
 
 我现在的指令是：
 '''

@@ -11,7 +11,7 @@ from openai import OpenAI
 
 def record_audio(
     filename: str = "temp_audio.mp3",
-    silence_threshold: int = 500,
+    silence_threshold: int = 600,
     silence_duration: int = 2,
     silence_proportion_threshold: float = 0.9,
     verbose: bool = False,
