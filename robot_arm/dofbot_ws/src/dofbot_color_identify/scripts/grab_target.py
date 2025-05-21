@@ -293,7 +293,7 @@ class identify_GetTarget:
             joints = self.server_joint(pos)
             # 调取移动函数
             self.grap.vlm_move(joints,grasp_joint)
-        except Exception: print("sqaure_pos empty")
+        except Exception: print("vlm_pos empty")
         # if move_status==1:
         #     # 回到抓取起始位置
         #     # 架起
