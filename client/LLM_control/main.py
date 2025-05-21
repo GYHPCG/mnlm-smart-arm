@@ -225,7 +225,7 @@ if __name__ == "__main__":
     load_dotenv(override=True)
     verbose = True
     nudge_user = True
-    use_voice_input =True  # Set to True to enable voice input. In docker container, it's not possible.
+    use_voice_input =False  # Set to True to enable voice input. In docker container, it's not possible.
     use_voice_output = True  # Set to True to enable voice output. In docker container, it's not possible.
     use_dummy_robot_arm_server = False  # Set to True to use the simulation mode
     use_rag = True

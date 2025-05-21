@@ -21,7 +21,8 @@ class identify_grap:
         :param joints_down: 机械臂抬起各关节角度
         :param color_angle: 移动到旁边的角度
         '''
-        joints_uu = [90, 80, 50, 50, 265, self.grap_joint]
+        rotate = self.arm.Arm_serial_servo_read(1)
+        joints_uu = [rotate, 80, 50, 50, 265, self.grap_joint]
         # 抬起
         joints_up = [joints_down[0], 80, 50, 50, 265, 30]
         # 架起
@@ -65,7 +66,8 @@ class identify_grap:
         :param joints_down: 机械臂抬起各关节角度
         :param color_angle: 移动到旁边的角度
         '''
-        joints_uu = [90, 80, 50, 50, 265, self.grap_joint]
+        rotate = self.arm.Arm_serial_servo_read(1)
+        joints_uu = [rotate, 80, 50, 50, 265, self.grap_joint]
         # 抬起
         joints_up = [joints_down[0], 80, 50, 50, 265, 30]
         # 架起
@@ -117,11 +119,11 @@ class identify_grap:
             joints = [joints[0], joints[1], joints[2], joints[3], 265, 30]
             # 移动到垃圾桶上方对应姿态
 #             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
-            # 移动到垃圾桶位置放下对应姿态
+            # 移动到归中位置
             self.grap_joint = grasp_joint
-            joints_down = [90, 135, 0, 45, 90, self.grap_joint]
+            joints_center = [90, 135, 0, 45, 90, self.grap_joint]
             # 移动
-            self.move_no_place(joints, joints_down)
+            self.move_no_place(joints, joints_center)
             # 移动完毕
             self.move_status = True
 
@@ -176,7 +178,8 @@ class identify_grap:
             sleep(0.5)
             # 抬起
             # self.arm.Arm_serial_servo_write6_array(joints_up, 1000)
-            self.arm.Arm_serial_servo_write6(90, 135, 0, 45, 90, 30, 1000)
+            rotate = self.arm.Arm_serial_servo_read(1)
+            self.arm.Arm_serial_servo_write6(rotate, 135, 0, 45, 90, 30, 1000)
             sleep(1)
                 
             self.move_status = True
@@ -193,7 +196,7 @@ class identify_grap:
             # print ("red")
             # print (joints[0], joints[1], joints[2], joints[3], joints[4])
             # 获得目标关节角
-            joints = [start_joints[0], start_joints[1], start_joints[2], start_joints[3], 265, 30]
+            joints = [start_joints[0], start_joints[1], start_joints[2], start_joints[3], 265, 50]
             # 移动到垃圾桶上方对应姿态
 #             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
             # 移动到垃圾桶位置放下对应姿态
