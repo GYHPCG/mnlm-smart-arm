@@ -121,7 +121,8 @@ class identify_grap:
 #             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
             # 移动到归中位置
             self.grap_joint = grasp_joint
-            joints_center = [90, 135, 0, 45, 90, self.grap_joint]
+            rotate = self.arm.Arm_serial_servo_read(1)
+            joints_center = [rotate, 135, 0, 45, 90, self.grap_joint]
             # 移动
             self.move_no_place(joints, joints_center)
             # 移动完毕
