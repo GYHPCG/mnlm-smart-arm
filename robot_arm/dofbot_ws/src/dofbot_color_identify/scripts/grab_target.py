@@ -284,15 +284,16 @@ class identify_GetTarget:
         if move_status==1:
             self.arm.Arm_Buzzer_On(1)
             sleep(0.5)
-        for name,pos in msg.items():
             # print "pos : ",pos
             # print "name : ",name
-            try:
-                # 此处ROS反解通讯,获取各关节旋转角度
-                joints = self.server_joint(pos)
-                # 调取移动函数
-                self.grap.vlm_move(joints)
-            except Exception: print("sqaure_pos empty")
+        try:
+            name,pos = list(msg.items())[0]
+            grasp,grasp_joint = list(msg.items())[1]
+            # 此处ROS反解通讯,获取各关节旋转角度
+            joints = self.server_joint(pos)
+            # 调取移动函数
+            self.grap.vlm_move(joints,grasp_joint)
+        except Exception: print("sqaure_pos empty")
         # if move_status==1:
         #     # 回到抓取起始位置
         #     # 架起
@@ -323,11 +324,12 @@ class identify_GetTarget:
              # 此处ROS反解通讯,获取各关节旋转角度
             name1,pos1 = list(msg.items())[0]
             name2,pos2 = list(msg.items())[1]
+            grasp,grasp_joint = list(msg.items())[2]
             
             start_joints = self.server_joint(pos1)
             end_joints = self.server_joint(pos2)
 
-            self.grap.double_vlm_move(start_joints,end_joints)
+            self.grap.double_vlm_move(start_joints,end_joints,grasp_joint)
             
         except Exception: print("sqaure_pos empty")
         # for name,pos in msg.items():
@@ -444,7 +446,10 @@ def grasp_object(result,img_path):
      # 输出结果
     print("Detected Targets:", target_xy)
     # ta =  {'red': (234, 233), 'green': (455, 222)}
-    ta =  {'start':target_xy}
+    grasp_joints = int(result['grasp_joints'])
+    ta =  {'start':target_xy,
+           "grasp_joints":grasp_joints
+        }
      # 假设我们有一个目标位置进行抓取测试
     if target_xy:
         target.vlm_target_run(ta)
@@ -471,12 +476,12 @@ def transfer_object_to_target(result,img_path):
     target      = identify_GetTarget()
     start_targets = target.get_arm_coordinates(START_X_MIN,START_Y_MIN,START_X_MAX,START_Y_MAX)
     end_targets = target.get_arm_coordinates(END_X_MIN,END_Y_MIN,END_X_MAX,END_Y_MAX)
+    grasp_joints = int(result['grasp_joints'])
 
-    # starts = {"start": start_targets}
-    # ends = {"end": end_targets}
     msg = {
         "start": start_targets,
         "end": end_targets,
+        "grasp_joints": grasp_joints
     }
     target.double_vlm_target_run(msg)
 

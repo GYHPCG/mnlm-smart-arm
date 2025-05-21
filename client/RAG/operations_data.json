@@ -222,7 +222,7 @@
         "parameters": {
         },
         "example": {
-            "instruction": "结束红色方块追踪",
+            "instruction": "结束红色方块追踪，结束实时追踪物体",
             "arm_action": "stop_color_follow()"
         }
     },
@@ -232,7 +232,7 @@
         "parameters": {
         },
         "example": {
-            "instruction": "结束运行引蛇出洞功能",
+            "instruction": "结束引蛇出洞功能，结束引蛇出洞游戏",
             "arm_action": "stop_color_follow()"
         }
     }

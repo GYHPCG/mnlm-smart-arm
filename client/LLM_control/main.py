@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-30 22:00:10
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-21 14:38:09
+LastEditTime: 2025-05-21 17:12:07
 FilePath: \code\mnlm-smart-arm\test_voice.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -225,10 +225,10 @@ if __name__ == "__main__":
     load_dotenv(override=True)
     verbose = True
     nudge_user = True
-    use_voice_input =False  # Set to True to enable voice input. In docker container, it's not possible.
+    use_voice_input =True  # Set to True to enable voice input. In docker container, it's not possible.
     use_voice_output = True  # Set to True to enable voice output. In docker container, it's not possible.
     use_dummy_robot_arm_server = False  # Set to True to use the simulation mode
-    use_rag = False
+    use_rag = True
     logger = Logger(__name__)
     start_conversation(
         verbose=verbose,

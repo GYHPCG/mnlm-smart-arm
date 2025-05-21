@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-21 13:36:33
+LastEditTime: 2025-05-21 17:09:38
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -23,10 +23,11 @@ def generate_prompt(command_str)->str:
                 with open(os.path.expanduser(robot_arm_document_path), "r",encoding='utf-8') as f:
                     robot_arm_document= "".join(f.readlines())
 
-    robto_arm_api_document = '../rag/operations_data.json'
-    if os.path.exists(os.path.expanduser(robto_arm_api_document)):
-                with open(os.path.expanduser(robto_arm_api_document), "r",encoding='utf-8') as f:
-                    api_document = "".join(f.readlines())
+    # robto_arm_api_document = '../rag/operations_data.json'
+    # if os.path.exists(os.path.expanduser(robto_arm_api_document)):
+    #             with open(os.path.expanduser(robto_arm_api_document), "r",encoding='utf-8') as f:
+    #                   api_document = "".join(f.readlines())
+    api_document = "结合RAG结果和过去的记忆，请进行任务规划，并生成对应的动作。对应api在rag结果里"
 
     SYSTEM_PROMOPT=f"""
     你是一个智能的机械臂，同时你是一个任务规划大师，对输入的指令可以进行理解和任务分解，机械臂内置了一些函数和相关的API文档，请你根据我的指令，特别参考API文档，生成对应的动作的函数并输出(动作可能是由多个函数组合而来),注意当涉及到拿起某个物体，抓起某个物体的时候，直接调用vlm_move函数。
@@ -117,7 +118,7 @@ def get_response(command_str,use_rag):
       global response
       if use_rag:
          retrieved_context = get_rag_result(command_str)
-         prompt = f"参考以下操作知识：{retrieved_context}\n用户指令：{command_str}\n请生成操作序列。"
+         prompt = f"参考以下RAG查询出的api操作知识和过去的对话记忆：{retrieved_context}\n用户指令：{command_str}\n请生成操作序列。"
          print(f"rag后的prompt为：{prompt}")
          response = generate_operations_sequence(prompt)
          response = json.loads(response)

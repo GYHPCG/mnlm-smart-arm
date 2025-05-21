@@ -12,7 +12,7 @@ class identify_grap:
         # 创建机械臂实例
         self.arm = Arm_Lib.Arm_Device()
         # 夹爪加紧角度
-        self.grap_joint = 170
+        self.grap_joint = 150
 
     def move(self, joints, joints_down):
         '''
@@ -102,7 +102,7 @@ class identify_grap:
         # self.arm.Arm_serial_servo_write6_array(joints_up, 1000)
         sleep(1)
 
-    def vlm_move(self, joints):
+    def vlm_move(self, joints,grasp_joint=150):
         '''
         机械臂移动函数
         :param name:识别的颜色
@@ -118,6 +118,7 @@ class identify_grap:
             # 移动到垃圾桶上方对应姿态
 #             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
             # 移动到垃圾桶位置放下对应姿态
+            self.grap_joint = grasp_joint
             joints_down = [90, 135, 0, 45, 90, self.grap_joint]
             # 移动
             self.move_no_place(joints, joints_down)
@@ -179,7 +180,7 @@ class identify_grap:
             sleep(1)
                 
             self.move_status = True
-    def double_vlm_move(self,start_joints,end_joints):
+    def double_vlm_move(self,start_joints,end_joints,grasp_joint=150):
         '''
         机械臂移动函数
         :param start_joints: 抓取位置反解求得的各关节角度
@@ -188,6 +189,7 @@ class identify_grap:
         if self.move_status == True:
             # 此处设置,需执行完本次操作,才能向下运行
             self.move_status = False
+            self.grap_joint = grasp_joint
             # print ("red")
             # print (joints[0], joints[1], joints[2], joints[3], joints[4])
             # 获得目标关节角
@@ -217,6 +219,7 @@ class identify_grap:
             # 移动到垃圾桶上方对应姿态
 #             joints_down = [45, 80, 35, 40, 265, self.grap_joint]
             # 移动到垃圾桶位置放下对应姿态
+
             joints_down = [45, 50, 20, 60, 265, self.grap_joint]
             # 移动
             self.move(joints, joints_down)

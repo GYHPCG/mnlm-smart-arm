@@ -55,7 +55,9 @@ except KeyboardInterrupt:
 5. Wrist: Servo 5 is the one joint above serve 4. It is like the wrist of the arm that can rotate.
 6. Fingers: Servo 6 is the last servo at the end. It is like the fingers that can hold (up to 180 degrees) and release (up to 0 degrees).
 
+[notice]!!!
 When all servos are at 90 degrees, the entire arm is perpendicular to the ground.
+the Servo 6 is the last servo at the end. It is like the fingers that can hold (up to 180 degrees) and release (up to 0 degrees).when the servo is at 0 degrees, the finger is fully extended. at the 180  degrees, the finger is fully closed.
 
 ## Read the current position of the servo
 
