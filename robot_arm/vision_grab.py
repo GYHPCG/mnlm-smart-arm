@@ -5,6 +5,7 @@ from spatialmath.base import e2h
 from roboticstoolbox import DHRobot, RevoluteMDH
 from machinevisiontoolbox import CentralCamera
 from grab_block import arm_move,move_to_ready,top_view_shot_full_fushi,arm_clamp_block
+from top_view_shot import *
 # from utlils
 def initialize_camera():
     """
