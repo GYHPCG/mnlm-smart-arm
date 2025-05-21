@@ -54,9 +54,9 @@ def move_to_ready():
     time.sleep(1)
 
 def vlm_move_ready():
-    rotate = Arm.Arm_serial_servo_read(1)
+    # rotate = Arm.Arm_serial_servo_read(1)
     # xy=[90,135]
-    joints_0 = [rotate, 135, 0, 0, 90, 30]
+    joints_0 = [90, 135, 0, 0, 90, 30]
     Arm.Arm_serial_servo_write6_array(joints_0, 1000)
 def top_view_shot_full_fushi():
 #     Arm.Arm_serial_servo_write6(89.71029649148431, 45.25613284306083, 91.86258487811448, -35, 89.71253294095186,0,1000)
