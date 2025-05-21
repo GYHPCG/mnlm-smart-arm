@@ -128,7 +128,7 @@
         },
         "example": {
             "instruction": "让我们一起玩引蛇出洞的游戏吧，跟随红色物体来玩吧",
-            "arm_action": "follow_color_run(color='red')"
+            "arm_action": "snake_follow_run(color='red')"
         }
     },
     {
@@ -223,6 +223,16 @@
         },
         "example": {
             "instruction": "结束红色方块追踪",
+            "arm_action": "stop_color_follow()"
+        }
+    },
+    {
+        "function_name": "stop_snake_follow",
+        "description": "停止当前正在运行的引蛇出洞功能，停止运行snake_follow_run函数",
+        "parameters": {
+        },
+        "example": {
+            "instruction": "结束运行引蛇出洞功能",
             "arm_action": "stop_color_follow()"
         }
     }

@@ -29,7 +29,7 @@ from vision_identify import vision_identify
 import sys
 sys.path.append("/home/dofbot/code/mnlm-smart-arm/robot_arm/dofbot_ws/src")
 from dofbot_color_follow.follow_color_act import follow_color_run,stop_color_follow
-from dofbot_snake_follow.scripts.snake_follow import  snake_follow_run
+from dofbot_snake_follow.scripts.snake_follow import  snake_follow_run,stop_snake_follow
 
 def assiant(command_str):
     print(command_str)
