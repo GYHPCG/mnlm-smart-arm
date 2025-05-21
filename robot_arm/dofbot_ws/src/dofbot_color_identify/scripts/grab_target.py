@@ -284,17 +284,17 @@ class identify_GetTarget:
         if move_status==1:
             self.arm.Arm_Buzzer_On(1)
             sleep(0.5)
-        try:
-            name,pos = list(msg.items())[0]
-            print(f"name:{name},pos:{pos}")
-            grasp,grasp_joint = list(msg.items())[1]
-            print(f"grasp:{grasp},grasp_joint:{grasp_joint}")
-            # 此处ROS反解通讯,获取各关节旋转角度
-            joints = self.server_joint(pos)
-            print(f"joints:{joints}")
-            # 调取移动函数
-            self.grap.vlm_move(joints,grasp_joint)
-        except Exception: print("vlm_pos empty")
+        # try:
+        name,pos = list(msg.items())[0]
+        print(f"name:{name},pos:{pos}")
+        grasp,grasp_joint = list(msg.items())[1]
+        print(f"grasp:{grasp},grasp_joint:{grasp_joint}")
+        # 此处ROS反解通讯,获取各关节旋转角度
+        joints = self.server_joint(pos)
+        print(f"joints:{joints}")
+        # 调取移动函数
+        self.grap.vlm_move(joints,grasp_joint)
+        # except Exception: print("vlm_pos empty")
         # if move_status==1:
         #     # 回到抓取起始位置
         #     # 架起
