@@ -2,19 +2,47 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-31 18:00:16
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-07 18:50:32
+LastEditTime: 2025-05-21 13:40:06
 FilePath: \code\mnlm-smart-arm\command_send.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
 import json
 import time
+import aiohttp
+import asyncio
+import threading
 
-import requests
+def _run_async_command(json_com, service_url):
+    """在新线程中运行异步命令"""
+    # 为这个线程创建新的事件循环
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        # 运行异步命令
+        loop.run_until_complete(_send_command(json_com, service_url))
+    finally:
+        # 清理事件循环
+        loop.close()
 
+async def _send_command(json_com, service_url):
+    """异步发送命令的内部函数"""
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(service_url, json=json.loads(json_com)) as response:
+                if response.status == 200:
+                    print("Commands sent successfully.")
+                    print("Response:", response)
+                else:
+                    print("Failed to send commands.")
+                    print("Status Code:", response.status)
+                    print("Response:", await response.text())
+    except Exception as e:
+        print(f"Error sending command: {e}")
 
 def send_commands_to_service(user_input, service_url):
     """
-    发送命令到服务端
+    发送命令到服务端（在后台异步执行）
     参数:
     user_input: 可以是字符串或JSON对象
     service_url: 服务端URL
@@ -45,23 +73,18 @@ def send_commands_to_service(user_input, service_url):
         json_com = json.dumps(json_com, ensure_ascii=False)
         print(f"Final JSON to send: {json_com}")
 
-        # 发送请求
+        # 在新线程中运行异步命令
         time.sleep(2)
-        response = requests.post(service_url, json=json.loads(json_com))
-
-        # 检查响应状态
-        if response.status_code == 200:
-            print("Commands sent successfully.")
-            print("Response:", response)
-        else:
-            print("Failed to send commands.")
-            print("Status Code:", response.status_code)
-            print("Response:", response.text)
+        thread = threading.Thread(
+            target=_run_async_command,
+            args=(json_com, service_url),
+            daemon=True
+        )
+        thread.start()
 
     except Exception as e:
         print(f"Error processing command: {e}")
         return
-
 
 if __name__ == "__main__":
     # json_file_path = os.path.join(

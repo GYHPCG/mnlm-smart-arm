@@ -166,7 +166,7 @@
     },
     {
         "function_name": "arm_rotate",
-        "description": "初始为90度，机械臂处于居中状态。我们让其为0度。当指令为向左30度的时候，即旋转-30+90=60度，向右旋转20度的时候，则旋转90+20=110度。控制机械臂旋转角度，移动位置",
+        "description": "初始为90度，机械臂处于居中状态。我们让其为0度。当指令为向右30度的时候，即旋转-30+90=60度，向左旋转20度的时候，则旋转90+20=110度。控制机械臂旋转角度，移动位置",
         "parameters": {
             "angle": {
                 "type": "int",
@@ -174,8 +174,8 @@
             }
         },
         "example": {
-            "instruction": "向右旋转90度",
-            "arm_action": "rm_rotate(90+90)"
+            "instruction": "向左旋转40度",
+            "arm_action": "rm_rotate(90+40)"
         }
     },
     {
@@ -214,25 +214,6 @@
         "example": {
             "instruction": "放到旁边位置去",
             "arm_action": "move_to(PROMPT='放到旁边位置去')"
-        }
-    },
-    {
-        "function_name": {},
-        "description": "机械臂摇头晃脑",
-        "operations": [
-            {
-                "operation": "move_single_servo",
-                "parameters": {"id": "servo3", "angle": 50, "time": 500}
-            },
-            {
-                "operation": "move_single_servo",
-                "parameters": {"id": "servo3", "angle": 0, "time": 500}
-            }
-
-        ],
-        "example": {
-            "instruction": "机械臂摇头晃脑",
-            "arm_action": {}
         }
     }
 ]

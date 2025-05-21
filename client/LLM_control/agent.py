@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-25 22:13:55
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-12 18:49:07
+LastEditTime: 2025-05-21 13:36:33
 FilePath: \code\mnlm-smart-arm\assiant.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -13,6 +13,7 @@ from rag_indexer import get_rag_result
 from command_send import send_commands_to_service
 import os
 import time
+import threading
 
 def generate_prompt(command_str)->str:
     robot_arm_document_path = './robot_arm.md'
@@ -101,8 +102,13 @@ def generate_operations_sequence(command_str):
     
     print("执行动作\n")
     print(response_content)
-    # 将字符串解析为字典
-    send_commands_to_service(response_content,"http://192.168.43.144:5688/robot_command")
+    
+    # 在后台执行命令发送，不等待其完成
+    threading.Thread(
+        target=send_commands_to_service,
+        args=(response_content, "http://192.168.43.144:5688/robot_command"),
+        daemon=True
+    ).start()
 
     return response_content
 

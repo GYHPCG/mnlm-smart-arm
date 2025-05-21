@@ -40,7 +40,7 @@
     }
   },
   {
-    "description": "控制机械臂的第i个舵机运动",
+    "description": "控制机械臂的第i个舵机运动angle度，运动时间为op_time",
     "function_name": "move_single_servo",
     "parameters": {
       "id": {
@@ -65,7 +65,7 @@
     }
   },
   {
-    "description": "一次性控制机械臂的6个舵机运动",
+    "description": "一次性控制机械臂的6个舵机运动对应的角度angles，运动时间为op_time",
     "function_name": "move_all_servo",
     "parameters": {
       "angle": {
@@ -90,7 +90,7 @@
     }
   },
   {
-    "description": "控制机械臂的夹爪,可让夹爪张开和握紧",
+    "description": "控制机械臂的夹爪,可让夹爪抓住物体和放开物体，参数enable=1时，夹爪按照物体大小进行关闭到一定程度，enable=0时，夹爪打开",
     "function_name": "arm_clamp_block",
     "parameters": {
       "enable": {
@@ -99,12 +99,12 @@
       }
     },
     "example": {
-      "instruction": "让机械臂握紧拳头",
+      "instruction": "抓住红色物体，握紧拳头",
       "arm_action": "arm_clamp_block(1)"
     }
   },
   {
-    "description": "注意，这个功能跟抓取无关，它只是一个小功能，让机械臂镜头跟随选择的颜色",
+    "description": "注意，这个功能跟抓取物体无关，它只是一个小功能，色彩追踪，让机械臂镜头跟随选择的颜色",
     "function_name": "follow_color_run",
     "parameters": {
       "color": {
@@ -118,7 +118,7 @@
     }
   },
   {
-    "description": "注意，这个功能跟抓取无关，它只是一个小功能，能让机械臂镜头来玩引蛇出洞的游戏",
+    "description": "注意，这个功能跟抓取物体无关，它只是一个小功能，引蛇出洞，能让机械臂镜头来玩引蛇出洞的游戏",
     "function_name": "snake_follow_run",
     "parameters": {
       "color": {
@@ -132,7 +132,7 @@
     }
   },
   {
-    "description": "能让机械臂识别出来当前摄像头所看到的物体",
+    "description": "能让机械臂识别出来当前摄像头所看到的物体，指令可以是：'你的面前有什么东西'，‘你看到了什么’",
     "function_name": "vision_identify",
     "parameters": {
       "PROMPT": {
@@ -146,7 +146,7 @@
     }
   },
   {
-    "description": "视觉抓取物品，控制机械臂抓起当前指定物体，然后移动到其他位置。这是函数是一个组合动作：移动-抓取-移动-放置",
+    "description": "视觉抓取物品，控制机械臂抓起当前指定物体，然后移动到其他位置。这是函数是一个组合动作：移动-抓取-移动-放置。注意！！！当指令是让机械臂放置物体的时候，不要调用这个函数，而是place_to函数",
     "function_name": "vlm_move",
     "parameters": {
       "PROMPT": {
@@ -161,11 +161,11 @@
     },
     "example": {
       "instruction": "帮我把绿色方块放在红色方块上",
-      "arm_action": "vision_identify(PROMPT='图像中有什么东西')"
+      "arm_action": "vlm_move(PROMPT='帮我把绿色方块放在红色方块上')"
     }
   },
   {
-    "description": "控制机械臂旋转角度，移动位置",
+    "description": "初始为90度，机械臂处于居中状态。我们让其为0度。当指令为向右30度的时候，即旋转-30+90=60度，向左旋转20度的时候，则旋转90+20=110度。控制机械臂旋转角度，移动位置",
     "function_name": "arm_rotate",
     "parameters": {
       "angle": {
@@ -174,8 +174,8 @@
       }
     },
     "example": {
-      "instruction": "向右旋转90度",
-      "arm_action": "rm_rotate(90)"
+      "instruction": "向左旋转40度",
+      "arm_action": "rm_rotate(90+40)"
     }
   },
   {
@@ -184,11 +184,11 @@
     "parameters": {},
     "example": {
       "instruction": "即将准备进行抓取动作",
-      "arm_action": "vlm_move_ready"
+      "arm_action": "vlm_move_ready()"
     }
   },
   {
-    "description": "z轴位置是固定的，x轴和y轴位置可变，参数传入指令，然后函数内部调用多模态大模型给出物体x轴和y轴的位置，最后机械臂移动到指定位置",
+    "description": "函数内部调用多模态大模型给出物体x轴和y轴的位置，然后让机械臂移动到指定位置。",
     "function_name": "move_to",
     "parameters": {
       "PROMPT": {
@@ -199,6 +199,20 @@
     "example": {
       "instruction": "移动到红色方块的位置",
       "arm_action": "move_to(PROMPT=''移动到红色方块的位置')"
+    }
+  },
+  {
+    "description": "让机械臂将物体放置到指定位置，当指令仅仅涉及到放置物体的时候，请调用这个函数，不要调用vlm_move函数",
+    "function_name": "place_to",
+    "parameters": {
+      "PROMPT": {
+        "type": "str",
+        "description": "输入需要机械臂操作的相关自然语言指令,然后多模态模型得出放置位置"
+      }
+    },
+    "example": {
+      "instruction": "放到旁边位置去",
+      "arm_action": "move_to(PROMPT='放到旁边位置去')"
     }
   }
 ]

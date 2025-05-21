@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-30 22:00:10
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-19 14:54:12
+LastEditTime: 2025-05-21 14:38:09
 FilePath: \code\mnlm-smart-arm\test_voice.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -33,31 +33,31 @@ def create_assistant(
         Assistant: The assistant.
     """
     if not client:
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-    #     client = OpenAI(
-    #     # openai系列的sdk，包括langchain，都需要这个/v1的后缀
-    #     base_url='https://api.openai-proxy.org/v1',
-    #     api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
-    # )
-   
-    assistant = client.beta.assistants.create(
-        name="Voice Robot Controller",
-        instructions="""
-            You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly.
-        """,
-        model="gpt-3.5-turbo-1106",
+        # client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        client = OpenAI(
+        # openai系列的sdk，包括langchain，都需要这个/v1的后缀
+        base_url='https://api.openai-proxy.org/v1',
+        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
     )
-    # assistant = client.chat.completions.create(
-    #     # name="Voice Robot Controller",
-    #     # instructions="""
-    #     #     You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly.
-    #     # """,
-    #     messages=[
-    #         {"role": "system", "content": "You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly."},
-    #         {"role": "user", "content": ""},
-    #     ],
+   
+    # assistant = client.beta.assistants.create(
+    #     name="Voice Robot Controller",
+    #     instructions="""
+    #         You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly.
+    #     """,
     #     model="gpt-3.5-turbo-1106",
     # )
+    assistant = client.chat.completions.create(
+        # name="Voice Robot Controller",
+        # instructions="""
+        #     You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly.
+        # """,
+        messages=[
+            {"role": "system", "content": "You have a brain and a robot arm, and you receive voice command from the human being, and respond accordingly."},
+            {"role": "user", "content": ""},
+        ],
+        model="gpt-3.5-turbo-1106",
+    )
     if verbose:
         logger.info(f"Assistant created: {assistant}")
     return assistant
@@ -202,7 +202,7 @@ def start_conversation(
         #     thread_id=thread.id,
         #     instructions=user_input,
         #     logger=logger,
-        #     verbose=verbose,
+        #     verbo `se=verbose,
         # )
         # response = wait_for_run(
         #     client=client,
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     load_dotenv(override=True)
     verbose = True
     nudge_user = True
-    use_voice_input =True  # Set to True to enable voice input. In docker container, it's not possible.
+    use_voice_input =False  # Set to True to enable voice input. In docker container, it's not possible.
     use_voice_output = True  # Set to True to enable voice output. In docker container, it's not possible.
     use_dummy_robot_arm_server = False  # Set to True to use the simulation mode
     use_rag = False
