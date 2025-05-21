@@ -284,8 +284,6 @@ class identify_GetTarget:
         if move_status==1:
             self.arm.Arm_Buzzer_On(1)
             sleep(0.5)
-            # print "pos : ",pos
-            # print "name : ",name
         try:
             name,pos = list(msg.items())[0]
             print(f"name:{name},pos:{pos}")
@@ -449,9 +447,9 @@ def grasp_object(result,img_path):
      # 输出结果
     print("Detected Targets:", target_xy)
     # ta =  {'red': (234, 233), 'green': (455, 222)}
-    grasp_joints = int(result['grasp_joint'])
+    grasp_joint = int(result['grasp_joint'])
     ta =  {'start':target_xy,
-           "grasp_joint":grasp_joints
+           "grasp":grasp_joint
         }
      # 假设我们有一个目标位置进行抓取测试
     if target_xy:
