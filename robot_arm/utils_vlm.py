@@ -85,6 +85,7 @@ import json
 from grab_block import start_to_end,vlm_move_ready
 from top_view_shot import *
 import sys
+import os
 sys.path.append("/home/dofbot/code/mnlm-smart-arm/robot_arm/dofbot_ws/src/dofbot_color_identify/scripts")
 from grab_target import *
 
@@ -100,7 +101,7 @@ def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_vi
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+        api_key=os.getenv('CLOSEAI_API_KEY'),
     )
     # 编码为base64数据
     base64_image = encode_image(img_path)
@@ -139,7 +140,7 @@ def QwenVL_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_v
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-        api_key='sk-5976ceeed2fc4165b57d9b4d9c5d5f86',
+        api_key=os.getenv('QwenVL_API_KEY'),
     )
     # 编码为base64数据
     base64_image = encode_image(img_path)
@@ -206,7 +207,7 @@ def cv_gpt_get_xy(PROMPT='抓到到红色方块位置', img_path='../image/top_v
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+        api_key=os.getenv('CLOSEAI_API_KEY'),
     )
     # 编码为base64数据
     base64_image = encode_image(img_path)
@@ -249,7 +250,7 @@ def get_xy(PROMPT='移动到红色方块位置', img_path='../image/top_view_now
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+        api_key=os.getenv('CLOSEAI_API_KEY'),
     )
     # 编码为base64数据
     base64_image = encode_image(img_path)

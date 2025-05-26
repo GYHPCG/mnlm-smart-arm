@@ -37,7 +37,7 @@ def create_assistant(
         client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+        api_key=os.getenv('CLOSEAI_API_KEY')
     )
    
     # assistant = client.beta.assistants.create(
