@@ -5,6 +5,12 @@ import cv2
 import numpy as np
 from PIL import Image
 from PIL import ImageFont, ImageDraw
+from dotenv import load_dotenv
+import os
+
+# 加载.env文件
+load_dotenv()
+
 # 导入中文字体，指定字号
 font = ImageFont.truetype('asset/SimHei.ttf', 26)
 
@@ -56,11 +62,10 @@ SYSTEM_PROMPT = '''
  "start_xyxy":[[102,505],[324,560]],
  "end":"旁边",
  "end_xyxy":[[300,150],[476,310]]
- “grasp_joint":150,
-”
+ "grasp_joint":150,
 }
 ---
-对于指令：将物体放到旁边去，"旁边"这个位置明确，你自己给出一个合理的位置，注意！！！x的坐标范围为(0,640),y的坐标范围为(0,480)，比如你给出“旁边”的坐标为（102,505）,(224,560)，那么你需要返回的json格式如下：
+对于指令：将物体放到旁边去，"旁边"这个位置明确，你自己给出一个合理的位置，注意！！！x的坐标范围为(0,640),y的坐标范围为(0,480)，比如你给出"旁边"的坐标为（102,505）,(224,560)，那么你需要返回的json格式如下：
 
 {
  "response": "你要放到旁边去嘛,我现在帮你放到旁边去，你稍等",
@@ -68,7 +73,7 @@ SYSTEM_PROMPT = '''
  "start_xyxy":[[102,505],[224,560]]
 }
 ---
-对于指令：放到蓝色方块上，你要从照片上获取出这个‘蓝色方块的’bbox坐标。然后调用place_to函数，将物体放到蓝色方块位置上。
+对于指令：放到蓝色方块上，你要从照片上获取出这个'蓝色方块的'bbox坐标。然后调用place_to函数，将物体放到蓝色方块位置上。
 {
  "response": "ok,我帮你放到蓝色方块上",
  "start":"蓝色方块",
@@ -106,7 +111,7 @@ def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_vi
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+        api_key=os.getenv('CLOSEAI_API_KEY'),
     )
     # 编码为base64数据
     base64_image = encode_image(img_path)
@@ -139,13 +144,13 @@ def gpt4o_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_vi
 
 def QwenVL_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_view_now11.jpg'):
     '''
-    QwenVL-max大模型API
+    QwenVL-2.5大模型API
     '''
     
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-        api_key='sk-5976ceeed2fc4165b57d9b4d9c5d5f86',
+        api_key=os.getenv('QwenVL_API_KEY'),
     )
     # 编码为base64数据
     base64_image = encode_image(img_path)
@@ -168,7 +173,6 @@ def QwenVL_API(PROMPT='手上拿的东西放到旁边', img_path='../image/top_v
         ],
     ) 
      
-    # print(chat_completion)
     response_content = chat_completion.choices[0].message.content.strip()
     print("QwenVL vlm 多模态模型调用成功")
     print(response_content)
@@ -212,7 +216,7 @@ def cv_gpt_get_xy(PROMPT='抓到到红色方块位置', img_path='../image/top_v
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+        api_key=os.getenv('CLOSEAI_API_KEY'),
     )
     # 编码为base64数据
     base64_image = encode_image(img_path)
@@ -255,7 +259,7 @@ def get_xy(PROMPT='移动到红色方块位置', img_path='../image/top_view_now
     client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+        api_key=os.getenv('CLOSEAI_API_KEY'),
     )
     # 编码为base64数据
     base64_image = encode_image(img_path)

@@ -2,7 +2,7 @@
 Author: '破竹' '2986779260@qq.com'
 Date: 2025-03-30 22:00:10
 LastEditors: '破竹' '2986779260@qq.com'
-LastEditTime: 2025-05-21 17:12:07
+LastEditTime: 2025-05-22 10:20:15
 FilePath: \code\mnlm-smart-arm\test_voice.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -37,7 +37,7 @@ def create_assistant(
         client = OpenAI(
         # openai系列的sdk，包括langchain，都需要这个/v1的后缀
         base_url='https://api.openai-proxy.org/v1',
-        api_key='sk-Cinx17W4V8Ss4B7HSfxUrf2kikhbvZE7EGHy5SYwWJBWs6Qm',
+        api_key=os.getenv('CLOSEAI_API_KEY'),
     )
    
     # assistant = client.beta.assistants.create(
